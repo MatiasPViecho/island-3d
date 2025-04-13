@@ -2,22 +2,26 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import { RGBELoader } from "three/examples/jsm/Loaders/RGBELoader.js";
 
 // canvas
 const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
+/**
+ * Loaders
+ */
 // Texture Loader
 const textureLoader = new THREE.TextureLoader();
-
 // Draco Loader
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("draco/");
-
 // GLTF Loader
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
+// RGBE Loader
+const rgbeLoader = new RGBELoader();
 
 /**
  * Textures
@@ -38,6 +42,13 @@ gltfLoader.load("island.glb", (gltf) => {
     child.material = bakedMaterial;
   });
   scene.add(gltf.scene);
+});
+
+// Load Enviroment Equirectangular HDR
+rgbeLoader.load("kloppenheim_06_puresky_1k.hdr", (envMap) => {
+  envMap.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = envMap;
+  scene.environment = envMap;
 });
 //sizes
 const sizes = {
