@@ -3,12 +3,17 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { RGBELoader } from "three/examples/jsm/Loaders/RGBELoader.js";
-
+import DitherVertexShader from "./shaders/dither/vertex.glsl";
+import DitherFragmentShader from "./shaders/dither/fragment.glsl";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import GUI from "lil-gui";
 // canvas
 const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
-
+const gui = new GUI({ width: 340 });
 /**
  * Loaders
  */
@@ -54,6 +59,7 @@ water.rotation.set(-Math.PI * 0.5, 0, 0);
 water.position.set(0, 0.1, 0);
 scene.add(water);
 
+/** After post Effects*/
 /**
  * Fog Section
  */
@@ -68,18 +74,19 @@ rgbeLoader.load("kloppenheim_06_puresky_1k.hdr", (envMap) => {
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
+  pixelRatio: Math.min(window.devicePixelRatio, 2),
 };
+sizes.resolution = new THREE.Vector2(sizes.width, sizes.height);
 window.addEventListener("resize", () => {
-  // update sizes
   sizes.width = window.innerWidth;
   sizes.height = window.innerHeight;
-  // Update Camera
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-
-  // Update Renderer
+  sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
+  sizes.resolution.set(window.innerWidth, window.innerHeight);
   renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(sizes.pixelRatio);
+
+  effectComposer.setSize(sizes.width, sizes.height);
+  effectComposer.setPixelRatio(sizes.pixelRatio);
 });
 
 /**
@@ -106,14 +113,58 @@ controls.enableDamping = true;
 /**
  * Renderer
  */
+const rendererParameters = {};
+rendererParameters.clearColor = "#2680ab";
+
 const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
+  canvas,
   antialias: true,
 });
+renderer.setClearColor(rendererParameters.clearColor);
 renderer.setSize(sizes.width, sizes.height);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(sizes.pixelRatio);
 
-renderer.setClearColor("#121725");
+/**
+ * Post Effects
+ */
+const renderTarget = new THREE.WebGLRenderTarget(480, 320, {
+  samples: renderer.getPixelRatio() === 1 ? 2 : 0,
+});
+const effectComposer = new EffectComposer(renderer, renderTarget);
+const renderPass = new RenderPass(scene, camera);
+effectComposer.addPass(renderPass);
+
+const ditherShader = {
+  uniforms: {
+    uResolution: new THREE.Uniform(sizes.resolution),
+    uColorNum: new THREE.Uniform(256.0),
+    uPixelSize: new THREE.Uniform(4.0),
+    tDiffuse: new THREE.Uniform(null),
+  },
+  vertexShader: `${DitherVertexShader}`,
+  fragmentShader: `${DitherFragmentShader}`,
+};
+// gui
+//   .add(ditherShader.uniforms.uColorNum, "value")
+//   .min(2)
+//   .max(16)
+//   .step(2)
+//   .name("Color num");
+// gui
+//   .add(ditherShader.uniforms.uPixelSize, "value")
+//   .min(2)
+//   .max(16)
+//   .step(2)
+//   .name("Pixel Size");
+// gui
+//   .add(ditherShader.uniforms.tDiffuse, "value")
+//   .min(0)
+//   .max(1)
+//   .step(0.01)
+//   .name("T diffuse");
+
+const ditherPass = new ShaderPass(ditherShader);
+effectComposer.addPass(ditherPass);
 
 /**
  * Animate
@@ -126,8 +177,8 @@ const tick = () => {
   // update controls
   controls.update();
   //render
-  renderer.render(scene, camera);
-
+  //renderer.render(scene, camera);
+  effectComposer.render();
   // call tick again
   window.requestAnimationFrame(tick);
 };
