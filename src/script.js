@@ -182,7 +182,6 @@ window.addEventListener("resize", () => {
   effectComposer.setSize(sizes.width, sizes.height);
   effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
-
 /**
  * Camera
  */
@@ -192,15 +191,18 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.y = 3;
-camera.position.x = 0.0;
-camera.position.z = 28;
+// camera.position.y = 3;
+// camera.position.x = 0.0;
+// camera.position.z = 28;
+camera.position.x = 10;
+camera.position.y = 20;
+camera.position.z = 25;
 camera.rotation.set(Math.PI * 0.05, -Math.PI * 0.05, Math.PI * 0.0085);
 scene.add(camera);
 
 // // Controls
-// const controls = new OrbitControls(camera, canvas);
-// controls.enableDamping = true;
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 
 /**
  * Renderer
@@ -231,32 +233,13 @@ effectComposer.addPass(renderPass);
 const ditherShader = {
   uniforms: {
     uResolution: new THREE.Uniform(sizes.resolution),
-    uColorNum: new THREE.Uniform(256.0),
+    uColorNum: new THREE.Uniform(8.0),
     uPixelSize: new THREE.Uniform(4.0),
     tDiffuse: new THREE.Uniform(null),
   },
   vertexShader: `${DitherVertexShader}`,
   fragmentShader: `${DitherFragmentShader}`,
 };
-// gui
-//   .add(ditherShader.uniforms.uColorNum, "value")
-//   .min(2)
-//   .max(16)
-//   .step(2)
-//   .name("Color num");
-// gui
-//   .add(ditherShader.uniforms.uPixelSize, "value")
-//   .min(2)
-//   .max(16)
-//   .step(2)
-//   .name("Pixel Size");
-// gui
-//   .add(ditherShader.uniforms.tDiffuse, "value")
-//   .min(0)
-//   .max(1)
-//   .step(0.01)
-//   .name("T diffuse");
-
 const ditherPass = new ShaderPass(ditherShader);
 effectComposer.addPass(ditherPass);
 
@@ -270,7 +253,7 @@ const tick = () => {
   // updating materials
   waterMaterial.uniforms.uTime.value = elapsedTime;
   // update controls
-  //controls.update();
+  controls.update();
   //render
   //renderer.render(scene, camera);
   effectComposer.render();
