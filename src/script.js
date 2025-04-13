@@ -44,6 +44,20 @@ gltfLoader.load("island.glb", (gltf) => {
   scene.add(gltf.scene);
 });
 
+/**
+ * Water Section
+ */
+const waterMaterial = new THREE.MeshBasicMaterial({ color: 0x1578a1 });
+const waterGeometry = new THREE.PlaneGeometry(180, 180);
+const water = new THREE.Mesh(waterGeometry, waterMaterial);
+water.rotation.set(-Math.PI * 0.5, 0, 0);
+water.position.set(0, 0.1, 0);
+scene.add(water);
+
+/**
+ * Fog Section
+ */
+
 // Load Enviroment Equirectangular HDR
 rgbeLoader.load("kloppenheim_06_puresky_1k.hdr", (envMap) => {
   envMap.mapping = THREE.EquirectangularReflectionMapping;
@@ -77,7 +91,12 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.x = 4;
+camera.position.y = 8;
+camera.position.x = 40;
+camera.position.z = 2;
+camera.rotation.x = Math.PI * 4;
+camera.rotation.y = 1.4;
+camera.rotation.x = 2.4;
 scene.add(camera);
 
 // Controls
@@ -106,7 +125,6 @@ const tick = () => {
 
   // update controls
   controls.update();
-
   //render
   renderer.render(scene, camera);
 
