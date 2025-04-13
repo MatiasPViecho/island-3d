@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { RGBELoader } from "three/examples/jsm/Loaders/RGBELoader.js";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import DitherVertexShader from "./shaders/dither/vertex.glsl";
 import DitherFragmentShader from "./shaders/dither/fragment.glsl";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
