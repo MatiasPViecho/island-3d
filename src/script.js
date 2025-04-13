@@ -145,7 +145,7 @@ waterGeometry.deleteAttribute("normal");
 waterGeometry.deleteAttribute("uv");
 const water = new THREE.Mesh(waterGeometry, waterMaterial);
 water.rotation.set(-Math.PI * 0.5, 0, 0);
-water.position.set(0, 0.1, 0);
+water.position.set(0, 0.12, 0);
 scene.add(water);
 
 /** After post Effects*/
@@ -170,7 +170,7 @@ window.addEventListener("resize", () => {
   sizes.width = window.innerWidth;
   sizes.height = window.innerHeight;
   sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
-  sizes.resolution.set(window.innerWidth, window.innerHeight);
+  sizes.resolution.set(800, 600);
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(sizes.pixelRatio);
 
@@ -192,17 +192,15 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.y = 8;
-camera.position.x = 40;
-camera.position.z = 2;
-camera.rotation.x = Math.PI * 4;
-camera.rotation.y = 1.4;
-camera.rotation.x = 2.4;
+camera.position.y = 3;
+camera.position.x = 0.0;
+camera.position.z = 28;
+camera.rotation.set(Math.PI * 0.05, -Math.PI * 0.05, Math.PI * 0.0085);
 scene.add(camera);
 
-// Controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+// // Controls
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 
 /**
  * Renderer
@@ -233,7 +231,7 @@ effectComposer.addPass(renderPass);
 const ditherShader = {
   uniforms: {
     uResolution: new THREE.Uniform(sizes.resolution),
-    uColorNum: new THREE.Uniform(8.0),
+    uColorNum: new THREE.Uniform(256.0),
     uPixelSize: new THREE.Uniform(4.0),
     tDiffuse: new THREE.Uniform(null),
   },
@@ -272,7 +270,7 @@ const tick = () => {
   // updating materials
   waterMaterial.uniforms.uTime.value = elapsedTime;
   // update controls
-  controls.update();
+  //controls.update();
   //render
   //renderer.render(scene, camera);
   effectComposer.render();

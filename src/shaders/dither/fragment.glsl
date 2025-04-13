@@ -184,6 +184,7 @@ float character(int n, vec2 p)
 	return 0.0;
 }
 
+#include ../includes/ambientLight.glsl
 void main()
 {
   
@@ -193,6 +194,14 @@ void main()
   vec2 uvPixel = normalizedPixelSize * floor(vUv / normalizedPixelSize);
    vec4 color = texture2D(tDiffuse, uvPixel);
   color.rgb = dither(vUv, color.rgb);
+
+  // lights 
+  vec3 light = vec3(0.0);
+
+  light += ambientLight(vec3(1.0), 2.0);
+
+  // apply lights
+  color.rgb *= light;
 
   gl_FragColor = color;
 }
