@@ -59,8 +59,7 @@ gltfLoader.load("island.glb", (gltf) => {
  * Seagull
  */
 let mixer = null;
-gltfLoader.load("seagull2.glb", (gltf) => {
-  scene.add(gltf.scene);
+gltfLoader.load("seagull.glb", (gltf) => {
   console.log(gltf.scene);
   mixer = new THREE.AnimationMixer(gltf.scene);
   const action = mixer.clipAction(gltf.animations[0]);
@@ -71,6 +70,8 @@ gltfLoader.load("seagull2.glb", (gltf) => {
   action2.play();
   gltf.scene.position.y = 3;
   gltf.scene.position.x = 5;
+  gltf.scene.scale.set(0.3);
+  const instancedSeagulls = new THREE.InstancedMesh(gltf.scene);
 });
 //
 /**
