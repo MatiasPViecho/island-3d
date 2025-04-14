@@ -29,7 +29,6 @@ const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 // RGBE Loader
 const rgbeLoader = new RGBELoader();
-
 /**
  * Textures
  */
@@ -60,18 +59,15 @@ gltfLoader.load("island.glb", (gltf) => {
  */
 let mixer = null;
 gltfLoader.load("seagull.glb", (gltf) => {
-  console.log(gltf.scene);
   mixer = new THREE.AnimationMixer(gltf.scene);
   const action = mixer.clipAction(gltf.animations[0]);
   const action2 = mixer.clipAction(gltf.animations[1]);
-  console.log(gltf.scene.animations);
-  console.log(action);
   action.play();
   action2.play();
   gltf.scene.position.y = 3;
   gltf.scene.position.x = 5;
-  gltf.scene.scale.set(0.3);
-  const instancedSeagulls = new THREE.InstancedMesh(gltf.scene);
+  gltf.scene.scale.set(0.3, 0.3, 0.3);
+  scene.add(gltf.scene);
 });
 //
 /**
