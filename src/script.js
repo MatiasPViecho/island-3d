@@ -33,10 +33,14 @@ const rgbeLoader = new RGBELoader();
 /**
  * Textures
  */
-// baked texture
 const bakedTexture = textureLoader.load("baked.jpg");
 bakedTexture.flipY = false;
 bakedTexture.colorSpace = THREE.SRGBColorSpace;
+
+/**
+ * Island
+ */
+// baked texture
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 // Materials
@@ -51,6 +55,24 @@ gltfLoader.load("island.glb", (gltf) => {
   scene.add(gltf.scene);
 });
 
+/**
+ * Seagull
+ */
+let mixer = null;
+gltfLoader.load("seagull2.glb", (gltf) => {
+  scene.add(gltf.scene);
+  console.log(gltf.scene);
+  mixer = new THREE.AnimationMixer(gltf.scene);
+  const action = mixer.clipAction(gltf.animations[0]);
+  const action2 = mixer.clipAction(gltf.animations[1]);
+  console.log(gltf.scene.animations);
+  console.log(action);
+  action.play();
+  action2.play();
+  gltf.scene.position.y = 3;
+  gltf.scene.position.x = 5;
+});
+//
 /**
  * Water Section
  */
@@ -78,68 +100,7 @@ const waterMaterial = new THREE.ShaderMaterial({
     uColorMultiplier: { value: 7.703 },
   },
 });
-gui
-  .add(waterMaterial.uniforms.uBigWavesElevation, "value")
-  .min(0)
-  .max(1)
-  .step(0.001)
-  .name("uBigWavesElevation");
-gui
-  .add(waterMaterial.uniforms.uBigWavesFrequency.value, "x")
-  .min(0)
-  .max(10)
-  .step(0.001)
-  .name("uBigWavesFrequencyX");
-gui
-  .add(waterMaterial.uniforms.uBigWavesFrequency.value, "y")
-  .min(0)
-  .max(10)
-  .step(0.001)
-  .name("uBigWavesFrequencyY");
-gui
-  .add(waterMaterial.uniforms.uBigWavesSpeed, "value")
-  .min(0)
-  .max(4)
-  .step(0.001)
-  .name("uBigWavesSpeed");
 
-gui
-  .add(waterMaterial.uniforms.uSmallWavesElevation, "value")
-  .min(0)
-  .max(1)
-  .step(0.001)
-  .name("uSmallWavesElevation");
-gui
-  .add(waterMaterial.uniforms.uSmallWavesFrequency, "value")
-  .min(0)
-  .max(30)
-  .step(0.001)
-  .name("uSmallWavesFrequency");
-gui
-  .add(waterMaterial.uniforms.uSmallWavesSpeed, "value")
-  .min(0)
-  .max(4)
-  .step(0.001)
-  .name("uSmallWavesSpeed");
-gui
-  .add(waterMaterial.uniforms.uSmallIterations, "value")
-  .min(0)
-  .max(5)
-  .step(1)
-  .name("uSmallIterations");
-
-gui
-  .add(waterMaterial.uniforms.uColorOffset, "value")
-  .min(0)
-  .max(1)
-  .step(0.001)
-  .name("uColorOffset");
-gui
-  .add(waterMaterial.uniforms.uColorMultiplier, "value")
-  .min(0)
-  .max(10)
-  .step(0.001)
-  .name("uColorMultiplier");
 const waterGeometry = new THREE.PlaneGeometry(200, 200, 1024, 1024);
 waterGeometry.deleteAttribute("normal");
 waterGeometry.deleteAttribute("uv");
@@ -248,8 +209,14 @@ effectComposer.addPass(ditherPass);
  */
 
 const clock = new THREE.Clock();
+let previousTime = 0;
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+  const deltaTime = elapsedTime - previousTime;
+  previousTime = elapsedTime;
+  // Update animations
+  if (mixer) mixer.update(deltaTime);
+
   // updating materials
   waterMaterial.uniforms.uTime.value = elapsedTime;
   // update controls
