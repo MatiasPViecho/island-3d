@@ -15,7 +15,6 @@ import waterFragmentShader from "./shaders/water/fragment.glsl";
 const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
-const gui = new GUI({ width: 340 });
 /**
  * Loaders
  */
@@ -29,6 +28,24 @@ const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 // RGBE Loader
 const rgbeLoader = new RGBELoader();
+
+/**
+ * Debug object
+ */
+const debugObject = {
+  SEAGULL_SPEED: 5,
+};
+
+/**
+ * GUI ADD
+ */
+const addGui = () => {
+  if (window && window.location.search == "?debug") {
+    const gui = new GUI({ width: 340 });
+    gui.add(debugObject, "SEAGULL_SPEED").step(0.1).min(-100).max(100);
+  }
+};
+addGui();
 /**
  * Textures
  */
@@ -58,19 +75,27 @@ gltfLoader.load("island.glb", (gltf) => {
  * Seagull
  */
 let mixers = [];
-const SEAGULL_AMOUNT = 3;
+const SEAGULL_AMOUNT = 9;
 const SEAGULL_REF = [];
 for (let i = 0; i < SEAGULL_AMOUNT; i++) {
   gltfLoader.load("seagull.glb", (gltf) => {
     mixers.push(new THREE.AnimationMixer(gltf.scene));
     const action = mixers[i].clipAction(gltf.animations[0]);
     const action2 = mixers[i].clipAction(gltf.animations[1]);
+    action.startAt(Math.abs(SEAGULL_AMOUNT / 2 - i) * 0.05);
+    action2.startAt(Math.abs(SEAGULL_AMOUNT / 2 - i) * 0.05);
     action.play();
     action2.play();
-    gltf.scene.position.y = 10 + (i + 1) / 10;
-    gltf.scene.position.z = 4 * (i + 1);
-    gltf.scene.position.x = 8 / (i + 1);
-    gltf.scene.scale.set(0.3, 0.3, 0.3);
+    gltf.scene.position.y = 10 + -Math.abs(SEAGULL_AMOUNT / 2 - i) * 0.1;
+    gltf.scene.position.z = i - 20;
+    gltf.scene.position.x = -40 + -Math.abs(SEAGULL_AMOUNT / 2 - i);
+    gltf.scene.rotation.y = Math.PI / 2;
+    gltf.scene.INITIAL_X_POS = -40 + -Math.abs(SEAGULL_AMOUNT / 2 - i);
+    gltf.scene.scale.set(
+      0.2 + Math.random() / 100,
+      0.2 + Math.random() / 100,
+      0.2 + Math.random() / 100
+    );
     scene.add(gltf.scene);
     SEAGULL_REF.push(gltf.scene);
   });
@@ -230,12 +255,11 @@ const tick = () => {
   // update seagulls
   if (SEAGULL_REF.length > 0) {
     SEAGULL_REF.forEach((seagull, i) => {
-      seagull.position.y = 10 + (0.5 + i / 5) * Math.cos(elapsedTime);
-      seagull.rotation.z = Math.sin(elapsedTime * 0.4 * (i / 10 + 1)) * 0.5;
-      seagull.rotation.y =
-        90 + -(2 * (i / 10 + 1)) - elapsedTime * (0.15 + i / 100);
-      seagull.position.x = Math.sin(elapsedTime * 0.2) * 20 * (i + 1 / 10 + 1);
-      seagull.position.z = -Math.cos(elapsedTime * 0.2) * 15 * (i + 1 / 10 + 1);
+      seagull.rotation.z = Math.sin(deltaTime) * debugObject.SEAGULL_SPEED;
+      seagull.position.x += deltaTime * debugObject.SEAGULL_SPEED;
+      if (seagull.position.x > 100) {
+        seagull.position.x = seagull.INITIAL_X_POS;
+      }
     });
   }
 
