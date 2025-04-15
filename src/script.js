@@ -57,18 +57,22 @@ gltfLoader.load("island.glb", (gltf) => {
 /**
  * Seagull
  */
-let mixer = null;
-gltfLoader.load("seagull.glb", (gltf) => {
-  mixer = new THREE.AnimationMixer(gltf.scene);
-  const action = mixer.clipAction(gltf.animations[0]);
-  const action2 = mixer.clipAction(gltf.animations[1]);
-  action.play();
-  action2.play();
-  gltf.scene.position.y = 3;
-  gltf.scene.position.x = 5;
-  gltf.scene.scale.set(0.3, 0.3, 0.3);
-  scene.add(gltf.scene);
-});
+let mixers = [];
+const SEAGULL_AMOUNT = 3;
+for (let i = 0; i < SEAGULL_AMOUNT; i++) {
+  gltfLoader.load("seagull.glb", (gltf) => {
+    mixers.push(new THREE.AnimationMixer(gltf.scene));
+    const action = mixers[i].clipAction(gltf.animations[0]);
+    const action2 = mixers[i].clipAction(gltf.animations[1]);
+    action.play();
+    action2.play();
+    gltf.scene.position.y = 10 + (i + 1) / 10;
+    gltf.scene.position.z = 4 * (i + 1);
+    gltf.scene.position.x = 8 / (i + 1);
+    gltf.scene.scale.set(0.3, 0.3, 0.3);
+    scene.add(gltf.scene);
+  });
+}
 //
 /**
  * Water Section
@@ -212,7 +216,11 @@ const tick = () => {
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
   // Update animations
-  if (mixer) mixer.update(deltaTime);
+  if (mixers) {
+    mixers.forEach((mixer) => {
+      mixer.update(deltaTime);
+    });
+  }
 
   // updating materials
   waterMaterial.uniforms.uTime.value = elapsedTime;
