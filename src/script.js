@@ -59,6 +59,7 @@ gltfLoader.load("island.glb", (gltf) => {
  */
 let mixers = [];
 const SEAGULL_AMOUNT = 3;
+const SEAGULL_REF = [];
 for (let i = 0; i < SEAGULL_AMOUNT; i++) {
   gltfLoader.load("seagull.glb", (gltf) => {
     mixers.push(new THREE.AnimationMixer(gltf.scene));
@@ -71,6 +72,7 @@ for (let i = 0; i < SEAGULL_AMOUNT; i++) {
     gltf.scene.position.x = 8 / (i + 1);
     gltf.scene.scale.set(0.3, 0.3, 0.3);
     scene.add(gltf.scene);
+    SEAGULL_REF.push(gltf.scene);
   });
 }
 //
@@ -224,6 +226,19 @@ const tick = () => {
 
   // updating materials
   waterMaterial.uniforms.uTime.value = elapsedTime;
+
+  // update seagulls
+  if (SEAGULL_REF.length > 0) {
+    SEAGULL_REF.forEach((seagull, i) => {
+      seagull.position.y = 10 + (0.5 + i / 5) * Math.cos(elapsedTime);
+      seagull.rotation.z = Math.sin(elapsedTime * 0.4 * (i / 10 + 1)) * 0.5;
+      seagull.rotation.y =
+        90 + -(2 * (i / 10 + 1)) - elapsedTime * (0.15 + i / 100);
+      seagull.position.x = Math.sin(elapsedTime * 0.2) * 20 * (i + 1 / 10 + 1);
+      seagull.position.z = -Math.cos(elapsedTime * 0.2) * 15 * (i + 1 / 10 + 1);
+    });
+  }
+
   // update controls
   controls.update();
   //render
