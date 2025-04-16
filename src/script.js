@@ -42,10 +42,112 @@ const debugObject = {
 const addGui = () => {
   if (window && window.location.search == "?debug") {
     const gui = new GUI({ width: 340 });
-    gui.add(debugObject, "SEAGULL_SPEED").step(0.1).min(-100).max(100);
+    const general = gui.addFolder("GENERAL");
+    const water = gui.addFolder("WATER");
+    const cameraFolder = gui.addFolder("CAMERA");
+
+    general.add(debugObject, "SEAGULL_SPEED").step(0.1).min(-100).max(100);
+    water
+      .add(waterMaterial.uniforms.uBigWavesElevation, "value")
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .name("uBigWavesElevation");
+    water
+      .add(waterMaterial.uniforms.uBigWavesFrequency.value, "x")
+      .min(0)
+      .max(10)
+      .step(0.001)
+      .name("uBigWavesFrequencyX");
+    water
+      .add(waterMaterial.uniforms.uBigWavesFrequency.value, "y")
+      .min(0)
+      .max(10)
+      .step(0.001)
+      .name("uBigWavesFrequencyY");
+    water
+      .add(waterMaterial.uniforms.uBigWavesSpeed, "value")
+      .min(0)
+      .max(4)
+      .step(0.001)
+      .name("uBigWavesSpeed");
+
+    water
+      .add(waterMaterial.uniforms.uSmallWavesElevation, "value")
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .name("uSmallWavesElevation");
+    water
+      .add(waterMaterial.uniforms.uSmallWavesFrequency, "value")
+      .min(0)
+      .max(30)
+      .step(0.001)
+      .name("uSmallWavesFrequency");
+    water
+      .add(waterMaterial.uniforms.uSmallWavesSpeed, "value")
+      .min(0)
+      .max(4)
+      .step(0.001)
+      .name("uSmallWavesSpeed");
+    water
+      .add(waterMaterial.uniforms.uSmallIterations, "value")
+      .min(0)
+      .max(5)
+      .step(1)
+      .name("uSmallIterations");
+
+    water
+      .add(waterMaterial.uniforms.uColorOffset, "value")
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .name("uColorOffset");
+    water
+      .add(waterMaterial.uniforms.uColorMultiplier, "value")
+      .min(0)
+      .max(10)
+      .step(0.001)
+      .name("uColorMultiplier");
+    cameraFolder
+      .add(camera.position, "x")
+      .min(-40)
+      .max(40)
+      .step(0.1)
+      .name("x camera");
+    cameraFolder
+      .add(camera.position, "y")
+      .min(-40)
+      .max(40)
+      .step(0.1)
+      .name("y camera");
+    cameraFolder
+      .add(camera.position, "z")
+      .min(-40)
+      .max(40)
+      .step(0.1)
+      .name("z camera");
+    console.log(camera);
+    cameraFolder
+      .add(camera.quaternion, "_x")
+      .min(-Math.PI)
+      .max(Math.PI)
+      .step(0.01)
+      .name("x camera - ROT");
+    cameraFolder
+      .add(camera.quaternion, "_y")
+      .min(-Math.PI)
+      .max(Math.PI)
+      .step(0.01)
+      .name("y camera - ROT");
+    cameraFolder
+      .add(camera.quaternion, "_z")
+      .min(-Math.PI)
+      .max(Math.PI)
+      .step(0.01)
+      .name("z camera - ROT");
   }
 };
-addGui();
 /**
  * Textures
  */
@@ -75,7 +177,7 @@ gltfLoader.load("island.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     child.material = bakedMaterial;
   });
-  gltf.scene.position.y = -0.05;
+  gltf.scene.position.y = -0.1;
   scene.add(gltf.scene);
 });
 
@@ -232,15 +334,18 @@ const camera = new THREE.PerspectiveCamera(
 // camera.position.y = 3;
 // camera.position.x = 0.0;
 // camera.position.z = 28;
-camera.position.x = 10;
-camera.position.y = 20;
-camera.position.z = 25;
-camera.rotation.set(Math.PI * 0.05, -Math.PI * 0.05, Math.PI * 0.0085);
+camera.position.x = 5.5;
+camera.position.y = 3.3;
+camera.position.z = 30.3;
+camera.quaternion.x = 0.03;
+camera.quaternion.y = 0.01;
+camera.quaternion.z = 0;
+
 scene.add(camera);
 
 // // Controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 
 /**
  * Renderer
@@ -313,7 +418,7 @@ const tick = () => {
   }
 
   // update controls
-  controls.update();
+  //controls.update();
   //render
   //renderer.render(scene, camera);
   effectComposer.render();
@@ -322,3 +427,4 @@ const tick = () => {
 };
 
 tick();
+addGui();
