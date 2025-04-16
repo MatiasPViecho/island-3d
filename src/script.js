@@ -127,7 +127,6 @@ const addGui = () => {
       .max(40)
       .step(0.1)
       .name("z camera");
-    console.log(camera);
     cameraFolder
       .add(camera.quaternion, "_x")
       .min(-Math.PI)
@@ -237,7 +236,6 @@ gltfLoader.load("models/bottle/bottle.glb", (gltf) => {
       child.material = bakedBottleMaterial;
     }
   });
-  console.log(gltf);
   bottle_model = gltf.scene;
   bottle_model.position.x = 7;
   bottle_model.position.y = -0.1;
