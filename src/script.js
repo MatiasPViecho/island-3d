@@ -49,10 +49,17 @@ addGui();
 /**
  * Textures
  */
-const bakedTexture = textureLoader.load("baked.jpg");
-bakedTexture.flipY = false;
-bakedTexture.colorSpace = THREE.SRGBColorSpace;
+const bakedIslandTexture = textureLoader.load("baked.jpg");
+bakedIslandTexture.flipY = false;
+bakedIslandTexture.colorSpace = THREE.SRGBColorSpace;
 
+const bakedBottleTexture = textureLoader.load("models/bottle/baked_bottle.jpg");
+bakedBottleTexture.flipY = false;
+bakedBottleTexture.colorSpace = THREE.SRGBColorSpace;
+
+const bakedPaperTexture = textureLoader.load("models/bottle/baked_paper.jpg");
+bakedPaperTexture.flipY = false;
+bakedPaperTexture.colorSpace = THREE.SRGBColorSpace;
 /**
  * Island
  */
@@ -61,19 +68,22 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 // Materials
 const bakedMaterial = new THREE.MeshBasicMaterial({
-  map: bakedTexture,
+  map: bakedIslandTexture,
 });
 // geometries
 gltfLoader.load("island.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     child.material = bakedMaterial;
   });
+  gltf.scene.position.y = -0.05;
   scene.add(gltf.scene);
 });
 
 /**
  * Seagull
  */
+
+// Models
 let mixers = [];
 const SEAGULL_AMOUNT = 9;
 const SEAGULL_REF = [];
@@ -100,11 +110,47 @@ for (let i = 0; i < SEAGULL_AMOUNT; i++) {
     SEAGULL_REF.push(gltf.scene);
   });
 }
+
+/**
+ * Bottle
+ */
+// Materials
+const bakedBottleMaterial = new THREE.MeshBasicMaterial({
+  map: bakedBottleTexture,
+});
+const bakedPaperMaterial = new THREE.MeshBasicMaterial({
+  map: bakedPaperTexture,
+});
+
+// Geometries
+const paper_name = "Plane002";
+const glass_name = "Plane002_1";
+const cork_name = "Plane002_2";
+let bottle_model = null;
+gltfLoader.load("models/bottle/bottle.glb", (gltf) => {
+  gltf.scene.traverse((child) => {
+    if (child.name == paper_name) {
+      child.material = bakedPaperMaterial;
+    } else if (child.name == glass_name || child.name == cork_name) {
+      child.material = bakedBottleMaterial;
+    }
+  });
+  console.log(gltf);
+  bottle_model = gltf.scene;
+  bottle_model.position.x = 7;
+  bottle_model.position.y = -0.1;
+
+  bottle_model.rotation.y = -Math.PI / 4;
+  bottle_model.rotation.x = -Math.PI / 8;
+  bottle_model.scale.set(0.75, 0.75, 0.75);
+  scene.add(bottle_model);
+});
 //
 /**
  * Water Section
  */
 // Material
+const waterDepthColor = new THREE.Color(0x1578a1);
 const waterMaterial = new THREE.ShaderMaterial({
   vertexShader: waterVertexShader,
   fragmentShader: waterFragmentShader,
@@ -117,12 +163,12 @@ const waterMaterial = new THREE.ShaderMaterial({
     uBigWavesFrequency: { value: new THREE.Vector2(0.51, 0.278) },
     uBigWavesSpeed: { value: 0.575 },
 
-    uSmallWavesElevation: { value: 0.36 },
+    uSmallWavesElevation: { value: 0.28 },
     uSmallWavesFrequency: { value: 5.94 },
     uSmallWavesSpeed: { value: 3.267 },
     uSmallIterations: { value: 1 },
 
-    uDepthColor: { value: new THREE.Color(0x1578a1) },
+    uDepthColor: { value: waterDepthColor },
     uSurfaceColor: { value: new THREE.Color(0x05587f) },
     uColorOffset: { value: 0.786 },
     uColorMultiplier: { value: 7.703 },
@@ -134,9 +180,8 @@ waterGeometry.deleteAttribute("normal");
 waterGeometry.deleteAttribute("uv");
 const water = new THREE.Mesh(waterGeometry, waterMaterial);
 water.rotation.set(-Math.PI * 0.5, 0, 0);
-water.position.set(0, 0.12, 0);
+water.position.set(0, 0.16, 0);
 scene.add(water);
-
 /** After post Effects*/
 /**
  * Fog Section
@@ -159,7 +204,7 @@ window.addEventListener("resize", () => {
   sizes.width = window.innerWidth;
   sizes.height = window.innerHeight;
   sizes.pixelRatio = Math.min(window.devicePixelRatio, 2);
-  sizes.resolution.set(800, 600);
+  sizes.resolution.set(sizes.width, sizes.height);
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(sizes.pixelRatio);
 
@@ -170,6 +215,10 @@ window.addEventListener("resize", () => {
   // update effect composer
   effectComposer.setSize(sizes.width, sizes.height);
   effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // dither shader update
+  if (ditherShader) {
+    ditherShader.uniforms.uResolution.value = sizes.resolution;
+  }
 });
 /**
  * Camera
