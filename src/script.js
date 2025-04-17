@@ -43,7 +43,6 @@ const debugObject = {
   SEAGULL_SPEED: 5,
   DISABLE_GLOW: false,
 };
-console.log(debugObject);
 
 /**
  * GUI ADD
@@ -247,7 +246,7 @@ const bakedPaperMaterial = new THREE.MeshBasicMaterial({
 const paper_name = "Plane002";
 const glass_name = "Plane002_1";
 const cork_name = "Plane002_2";
-let bottle_model = null;
+let bottle_mesh = null;
 gltfLoader.load("models/bottle/bottle.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     if (child.name == paper_name) {
@@ -256,14 +255,14 @@ gltfLoader.load("models/bottle/bottle.glb", (gltf) => {
       child.material = bakedBottleMaterial;
     }
   });
-  bottle_model = gltf.scene;
-  bottle_model.position.x = 7;
-  bottle_model.position.y = -0.1;
+  bottle_mesh = gltf.scene;
+  bottle_mesh.position.x = 7;
+  bottle_mesh.position.y = -0.1;
 
-  bottle_model.rotation.y = -Math.PI / 4;
-  bottle_model.rotation.x = -Math.PI / 8;
-  bottle_model.scale.set(0.75, 0.75, 0.75);
-  scene.add(bottle_model);
+  bottle_mesh.rotation.y = -Math.PI / 4;
+  bottle_mesh.rotation.x = -Math.PI / 8;
+  bottle_mesh.scale.set(0.75, 0.75, 0.75);
+  scene.add(bottle_mesh);
 });
 //
 /**
@@ -340,6 +339,25 @@ window.addEventListener("resize", () => {
     ditherPass.uniforms.uResolution.value = sizes.resolution;
   }
 });
+const mouse = new THREE.Vector2();
+window.addEventListener("mousemove", (e) => {
+  mouse.x = (e.clientX / sizes.width) * 2 - 1;
+  mouse.y = -(e.clientY / sizes.height) * 2 + 1;
+});
+
+/*
+ * Clickable Events
+ */
+window.addEventListener("click", () => {
+  // ugly code model should be renamed
+  if (
+    currentIntersect &&
+    currentIntersect.object &&
+    currentIntersect.object.parent.name == "BottleAll"
+  ) {
+    console.log("clicking bottle");
+  }
+});
 /**
  * Camera
  */
@@ -410,15 +428,24 @@ const ditherPass = new ShaderPass(ditherShader);
 effectComposer.addPass(ditherPass);
 
 /**
+ * Raycaster
+ */
+const raycaster = new THREE.Raycaster();
+/**
  * Animate
  */
 
 const clock = new THREE.Clock();
 let previousTime = 0;
+let currentIntersect = null;
+let updated = false;
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
+
+  raycaster.setFromCamera(mouse, camera);
+
   // Update animations
   if (mixers) {
     mixers.forEach((mixer) => {
@@ -440,6 +467,17 @@ const tick = () => {
     });
   }
 
+  // Update current intersects
+  if (bottle_mesh) {
+    const intersects = raycaster.intersectObject(bottle_mesh);
+    if (intersects.length) {
+      canvas.classList.add("pointer");
+      currentIntersect = intersects[0];
+    } else {
+      canvas.classList.remove("pointer");
+      currentIntersect = null;
+    }
+  }
   // update controls
   //controls.update();
   //render
