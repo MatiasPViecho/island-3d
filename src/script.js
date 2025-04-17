@@ -41,7 +41,9 @@ const rgbeLoader = new RGBELoader();
  */
 const debugObject = {
   SEAGULL_SPEED: 5,
+  DISABLE_GLOW: false,
 };
+console.log(debugObject);
 
 /**
  * GUI ADD
@@ -54,6 +56,11 @@ const addGui = () => {
     const cameraFolder = gui.addFolder("CAMERA");
 
     general.add(debugObject, "SEAGULL_SPEED").step(0.1).min(-100).max(100);
+    general.add(debugObject, "DISABLE_GLOW").onChange(() => {
+      bakedBottleMaterial.uniforms.uDisableGlow.value = debugObject.DISABLE_GLOW
+        ? 0.0
+        : 1.0;
+    });
     water
       .add(waterMaterial.uniforms.uBigWavesElevation, "value")
       .min(0)
@@ -227,6 +234,7 @@ const bakedBottleMaterial = new THREE.ShaderMaterial({
   uniforms: {
     map: { value: bakedBottleTexture },
     uTime: { value: 0 },
+    uDisableGlow: { value: debugObject.DISABLE_GLOW ? 0.0 : 1.0 },
   },
   vertexShader: bottleVertexShader,
   fragmentShader: bottleFragmentShader,
