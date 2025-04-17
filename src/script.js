@@ -11,6 +11,8 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import GUI from "lil-gui";
 import waterVertexShader from "./shaders/water/vertex.glsl";
 import waterFragmentShader from "./shaders/water/fragment.glsl";
+import bottleVertexShader from "./shaders/bottle/vertex.glsl";
+import bottleFragmentShader from "./shaders/bottle/fragment.glsl";
 // canvas
 const canvas = document.querySelector("canvas.webgl");
 // Scene
@@ -216,8 +218,13 @@ for (let i = 0; i < SEAGULL_AMOUNT; i++) {
  * Bottle
  */
 // Materials
-const bakedBottleMaterial = new THREE.MeshBasicMaterial({
-  map: bakedBottleTexture,
+const bakedBottleMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    map: { value: bakedBottleTexture },
+    uTime: { value: 0 },
+  },
+  vertexShader: bottleVertexShader,
+  fragmentShader: bottleFragmentShader,
 });
 const bakedPaperMaterial = new THREE.MeshBasicMaterial({
   map: bakedPaperTexture,
@@ -332,10 +339,10 @@ const camera = new THREE.PerspectiveCamera(
 // camera.position.y = 3;
 // camera.position.x = 0.0;
 // camera.position.z = 28;
-camera.position.x = 5.5;
-camera.position.y = 3.3;
-camera.position.z = 30.3;
-camera.quaternion.x = 0.03;
+camera.position.x = 7.1;
+camera.position.y = 0.6;
+camera.position.z = 4.9;
+camera.quaternion.x = -0.01;
 camera.quaternion.y = 0.01;
 camera.quaternion.z = 0;
 
@@ -403,7 +410,7 @@ const tick = () => {
 
   // updating materials
   waterMaterial.uniforms.uTime.value = elapsedTime;
-
+  bakedBottleMaterial.uniforms.uTime.value = elapsedTime;
   // update seagulls
   if (SEAGULL_REF.length > 0) {
     SEAGULL_REF.forEach((seagull, i) => {
