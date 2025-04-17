@@ -337,7 +337,6 @@ window.addEventListener("resize", () => {
   effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   // dither shader update
   if (ditherShader) {
-    ditherShader.uniforms.uResolution.value = sizes.resolution;
     ditherPass.uniforms.uResolution.value = sizes.resolution;
   }
 });
