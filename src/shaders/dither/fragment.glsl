@@ -195,6 +195,7 @@ void main()
    vec4 color = texture2D(tDiffuse, uvPixel);
   color.rgb = dither(vUv, color.rgb);
 
+  // add lights to allow for a more "happy" scene
   // lights 
   vec3 light = vec3(0.0);
 
