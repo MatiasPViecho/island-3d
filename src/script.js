@@ -13,6 +13,11 @@ import waterVertexShader from "./shaders/water/vertex.glsl";
 import waterFragmentShader from "./shaders/water/fragment.glsl";
 import bottleVertexShader from "./shaders/bottle/vertex.glsl";
 import bottleFragmentShader from "./shaders/bottle/fragment.glsl";
+
+// TODO: Code structure -> bottle hover -> bottle click ->
+//        paper appear popup (sh1 pickup example) -> add more fog
+//        -> add more islands (re-bake model) -> ??
+
 // canvas
 const canvas = document.querySelector("canvas.webgl");
 // Scene
@@ -336,13 +341,18 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-// camera.position.y = 3;
-// camera.position.x = 0.0;
-// camera.position.z = 28;
-camera.position.x = 7.1;
-camera.position.y = 0.6;
-camera.position.z = 4.9;
-camera.quaternion.x = -0.01;
+// BOTTLE DEBUG POSITIONS
+// camera.position.x = 7.1;
+// camera.position.y = 0.6;
+// camera.position.z = 4.9;
+// camera.quaternion.x = -0.01;
+// camera.quaternion.y = 0.01;
+// camera.quaternion.z = 0;
+
+camera.position.x = 5.5;
+camera.position.y = 3.3;
+camera.position.z = 30.3;
+camera.quaternion.x = 0.03;
 camera.quaternion.y = 0.01;
 camera.quaternion.z = 0;
 
