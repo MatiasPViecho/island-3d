@@ -24,10 +24,6 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
-// Axes helpers
-const axes = new THREE.AxesHelper(100);
-scene.add(axes);
-
 /**
  * Loaders
  */
@@ -47,7 +43,11 @@ const rgbeLoader = new RGBELoader();
  */
 const debugObject = {
   SEAGULL_SPEED: 5,
-  DISABLE_GLOW: false,
+};
+
+const worldObjects = {
+  topLayer: null,
+  showcasedItem: null,
 };
 
 /**
@@ -55,17 +55,16 @@ const debugObject = {
  */
 const addGui = () => {
   if (window && window.location.search == "?debug") {
+    // Axes helpers
+    const axes = new THREE.AxesHelper(100);
+    scene.add(axes);
+
     const gui = new GUI({ width: 340 });
     const general = gui.addFolder("GENERAL");
     const water = gui.addFolder("WATER");
     const cameraFolder = gui.addFolder("CAMERA");
 
     general.add(debugObject, "SEAGULL_SPEED").step(0.1).min(-100).max(100);
-    general.add(debugObject, "DISABLE_GLOW").onChange(() => {
-      bakedBottleMaterial.uniforms.uDisableGlow.value = debugObject.DISABLE_GLOW
-        ? 0.0
-        : 1.0;
-    });
     water
       .add(waterMaterial.uniforms.uBigWavesElevation, "value")
       .min(0)
@@ -233,14 +232,18 @@ for (let i = 0; i < SEAGULL_AMOUNT; i++) {
 
 /**
  * Bottle
+ *
  */
 // Materials
-const bakedBottleMaterial = new THREE.ShaderMaterial({
-  uniforms: {
-    map: { value: bakedBottleTexture },
-    uTime: { value: 0 },
-    uDisableGlow: { value: debugObject.DISABLE_GLOW ? 0.0 : 1.0 },
+const bakedBottleUniforms = {
+  map: { value: bakedBottleTexture },
+  uTime: { value: 0 },
+  uShowcaseBrightness: {
+    value: null,
   },
+};
+const bakedBottleMaterial = new THREE.ShaderMaterial({
+  uniforms: bakedBottleUniforms,
   vertexShader: bottleVertexShader,
   fragmentShader: bottleFragmentShader,
 });
@@ -424,15 +427,38 @@ const showcaseItem = (
   //item.position.copy(cameraPosition);
 };
 
+const addDarkLayer = () => {
+  const fakeBlack = new THREE.Mesh(
+    new THREE.PlaneGeometry(2, 2),
+    new THREE.ShaderMaterial({
+      fragmentShader: `void main(){gl_FragColor = vec4(0.0, 0.0, 0.0, 0.4);}`,
+      side: THREE.DoubleSide,
+      transparent: true,
+    })
+  );
+
+  fakeBlack.position.copy(camera.position);
+  fakeBlack.position.z -= 1;
+  scene.add(fakeBlack);
+  worldObjects.topLayer = fakeBlack;
+};
+const removeTopLayer = () => {
+  worldObjects.topLayer.geometry.dispose();
+  worldObjects.topLayer.material.dispose();
+  scene.remove(worldObjects.topLayer);
+  worldObjects.topLayer = null;
+};
 const setItemShowcasing = (item, pos, rotation, scale, fn = null) => {
+  if (item) {
+    item.isShowcasing = true;
+    addDarkLayer();
+  }
+  worldObjects.showcasedItem = item;
   showcaseItemHolder.item = item;
   showcaseItemHolder.pos = pos;
   showcaseItemHolder.rotation = rotation;
   showcaseItemHolder.scale = scale;
   showcaseItemHolder.action = fn;
-  if (item) {
-    item.isShowcasing = true;
-  }
 };
 
 const removeItemShowcasing = () => {
@@ -441,6 +467,7 @@ const removeItemShowcasing = () => {
   showcaseItemHolder.item.quaternion.copy(showcaseItemHolder.rotation);
   showcaseItemHolder.item.isShowcasing = false;
   setItemShowcasing(null, null, null, null, null);
+  removeTopLayer();
   showOutlineColor();
 };
 /**
@@ -545,6 +572,9 @@ const clock = new THREE.Clock();
 let previousTime = 0;
 let currentIntersect = null;
 let updated = false;
+let firstItemsTick = {
+  bottle: false,
+};
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
@@ -552,6 +582,12 @@ const tick = () => {
 
   raycaster.setFromCamera(mouse, camera);
 
+  if (!firstItemsTick.bottle) {
+    if (bottle_mesh) {
+      bakedBottleUniforms.uShowcaseBrightness.value =
+        worldObjects.showcasedItem == bottle_mesh ? 1.0 : 0.0;
+    }
+  }
   // Update animations
   if (mixers) {
     mixers.forEach((mixer) => {
