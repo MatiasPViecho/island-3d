@@ -502,8 +502,8 @@ effectComposer.addPass(renderPass);
 const ditherShader = {
   uniforms: {
     uResolution: new THREE.Uniform(sizes.resolution),
-    uColorNum: new THREE.Uniform(8.0),
-    uPixelSize: new THREE.Uniform(4.0),
+    uColorNum: new THREE.Uniform(32.0),
+    uPixelSize: new THREE.Uniform(2.0),
     tDiffuse: new THREE.Uniform(null),
   },
   vertexShader: `${DitherVertexShader}`,
