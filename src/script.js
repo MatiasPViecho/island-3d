@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import gsap from "gsap";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
@@ -8,6 +9,7 @@ import DitherFragmentShader from "./shaders/dither/fragment.glsl";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass.js";
 import GUI from "lil-gui";
 import waterVertexShader from "./shaders/water/vertex.glsl";
 import waterFragmentShader from "./shaders/water/fragment.glsl";
@@ -352,28 +354,95 @@ window.addEventListener("mousemove", (e) => {
 /*
  * Clickable Events
  */
+
+const showcaseItemHolder = {
+  item: null,
+  pos: null,
+  rotation: null,
+  scale: null,
+  action: "logTest",
+};
 window.addEventListener("click", () => {
-  // ugly code model should be renamed
-  if (
-    currentIntersect &&
-    currentIntersect.object &&
-    currentIntersect.object.parent.name == "BottleAll"
-  ) {
-    showcaseItem(currentIntersect.object.parent.parent);
+  if (showcaseItemHolder.item) {
+    if (showcaseItemHolder.action && showcaseItemHolder.action == "logTest") {
+      console.log("test");
+    }
+    removeItemShowcasing();
+  } else {
+    // ugly code model should be renamed
+    if (
+      currentIntersect &&
+      currentIntersect.object &&
+      currentIntersect.object.parent.name == "BottleAll"
+    ) {
+      showcaseItem(
+        currentIntersect.object.parent.parent,
+        -Math.PI / 4,
+        Math.PI / 4,
+        0,
+        0.25,
+        0.75
+      );
+    }
   }
 });
 
-const showcaseItem = (item, angleStart) => {
-  const previousPosition = item.position;
-  const previourRotation = item.rotation;
+const showcaseItem = (
+  item,
+  angleXStart,
+  angleYStart,
+  angleZStart,
+  scaleStart,
+  scaleFinish
+) => {
+  const previousPosition = new THREE.Vector3(0, 0, 0).copy(item.position);
+  const previousRotation = new THREE.Vector4(0, 0, 0).copy(item.quaternion);
+  const previousScale = new THREE.Vector3(0, 0, 0).copy(item.scale);
   const cameraPosition = camera.position;
-  const cameraRotation = camera.rotation;
-  //item.setRotationFromAxisAngle(cameraRotation, 0);
   item.position.copy(cameraPosition);
   item.position.z -= 6;
+  item.rotation.z = angleZStart;
+  item.rotation.x = angleXStart;
+  item.rotation.y = angleYStart;
+  item.scale.x = scaleStart;
+  item.scale.y = scaleStart;
+  item.scale.z = scaleStart;
+  gsap.to(item.scale, {
+    duration: 0.5,
+    x: scaleFinish,
+    y: scaleFinish,
+    z: scaleFinish,
+  });
+  hideOutlineColor();
+  setItemShowcasing(
+    item,
+    previousPosition,
+    previousRotation,
+    previousScale,
+    "logTest"
+  );
   //item.position.copy(cameraPosition);
 };
 
+const setItemShowcasing = (item, pos, rotation, scale, fn = null) => {
+  showcaseItemHolder.item = item;
+  showcaseItemHolder.pos = pos;
+  showcaseItemHolder.rotation = rotation;
+  showcaseItemHolder.scale = scale;
+  showcaseItemHolder.action = fn;
+  if (item) {
+    item.isShowcasing = true;
+  }
+};
+
+const removeItemShowcasing = () => {
+  showcaseItemHolder.item.position.copy(showcaseItemHolder.pos);
+  showcaseItemHolder.item.scale.copy(showcaseItemHolder.scale);
+  showcaseItemHolder.item.quaternion.copy(showcaseItemHolder.rotation);
+  showcaseItemHolder.item.isShowcasing = false;
+  setItemShowcasing(null, null, null, null, null);
+  showOutlineColor();
+};
 /**
  * Camera
  */
@@ -442,7 +511,28 @@ const ditherShader = {
 };
 const ditherPass = new ShaderPass(ditherShader);
 effectComposer.addPass(ditherPass);
+const selectedObjects = [];
+const outlinePass = new OutlinePass(
+  renderPass.sizes,
+  renderPass.scene,
+  renderPass.camera,
+  selectedObjects
+);
+outlinePass.edgeStrength = 1.425;
+outlinePass.edgeStrength = 4.5;
+outlinePass.edgeGlow = 0.2;
+outlinePass.pulsePeriod = 4;
+outlinePass.visibleEdgeColor.set("#ffffff");
+outlinePass.hiddenEdgeColor.set("#000000");
+const hideOutlineColor = () => {
+  outlinePass.visibleEdgeColor.set("#000000");
+};
+const showOutlineColor = () => {
+  outlinePass.visibleEdgeColor.set("#ffffff");
+};
+effectComposer.addPass(outlinePass);
 
+//effectComposer.addPass(outlinePass);
 /**
  * Raycaster
  */
@@ -485,13 +575,22 @@ const tick = () => {
 
   // Update current intersects
   if (bottle_mesh) {
-    const intersects = raycaster.intersectObject(bottle_mesh);
-    if (intersects.length) {
-      canvas.classList.add("pointer");
-      currentIntersect = intersects[0];
+    if (!updated) {
+      selectedObjects.push(bottle_mesh);
+      updated = true;
+    }
+    if (bottle_mesh.isShowcasing) {
+      bottle_mesh.rotation.z = Math.PI / 2 + 0.75 * elapsedTime;
     } else {
-      canvas.classList.remove("pointer");
-      currentIntersect = null;
+      // no need to check for intersects if item is already being showcased
+      const intersects = raycaster.intersectObject(bottle_mesh);
+      if (intersects.length) {
+        canvas.classList.add("pointer");
+        currentIntersect = intersects[0];
+      } else {
+        canvas.classList.remove("pointer");
+        currentIntersect = null;
+      }
     }
   }
   // update controls
