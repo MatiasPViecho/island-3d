@@ -13,7 +13,6 @@ import waterVertexShader from "./shaders/water/vertex.glsl";
 import waterFragmentShader from "./shaders/water/fragment.glsl";
 import bottleVertexShader from "./shaders/bottle/vertex.glsl";
 import bottleFragmentShader from "./shaders/bottle/fragment.glsl";
-
 // TODO: Code structure -> bottle hover -> bottle click ->
 //        paper appear popup (sh1 pickup example) -> add more fog
 //        -> add more islands (re-bake model) -> ??
@@ -22,6 +21,11 @@ import bottleFragmentShader from "./shaders/bottle/fragment.glsl";
 const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
+
+// Axes helpers
+const axes = new THREE.AxesHelper(100);
+scene.add(axes);
+
 /**
  * Loaders
  */
@@ -355,9 +359,21 @@ window.addEventListener("click", () => {
     currentIntersect.object &&
     currentIntersect.object.parent.name == "BottleAll"
   ) {
-    console.log("clicking bottle");
+    showcaseItem(currentIntersect.object.parent.parent);
   }
 });
+
+const showcaseItem = (item, angleStart) => {
+  const previousPosition = item.position;
+  const previourRotation = item.rotation;
+  const cameraPosition = camera.position;
+  const cameraRotation = camera.rotation;
+  //item.setRotationFromAxisAngle(cameraRotation, 0);
+  item.position.copy(cameraPosition);
+  item.position.z -= 6;
+  //item.position.copy(cameraPosition);
+};
+
 /**
  * Camera
  */
