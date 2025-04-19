@@ -403,7 +403,7 @@ const showcaseItem = (
   const previousScale = new THREE.Vector3(0, 0, 0).copy(item.scale);
   const cameraPosition = camera.position;
   item.position.copy(cameraPosition);
-  item.position.z -= 6;
+  item.position.z -= 4;
   item.rotation.z = angleZStart;
   item.rotation.x = angleXStart;
   item.rotation.y = angleYStart;
