@@ -43,6 +43,7 @@ const rgbeLoader = new RGBELoader();
  */
 const debugObject = {
   SEAGULL_SPEED: 5,
+  SHOWCASED_ROTATION_SPEED: 0.25,
 };
 
 const worldObjects = {
@@ -616,7 +617,8 @@ const tick = () => {
       updated = true;
     }
     if (bottle_mesh.isShowcasing) {
-      bottle_mesh.rotation.z = Math.PI / 2 + 0.75 * elapsedTime;
+      bottle_mesh.rotation.z =
+        Math.PI / 2 + debugObject.SHOWCASED_ROTATION_SPEED * elapsedTime;
     } else {
       // no need to check for intersects if item is already being showcased
       const intersects = raycaster.intersectObject(bottle_mesh);
