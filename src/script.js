@@ -286,21 +286,19 @@ const waterMaterial = new THREE.ShaderMaterial({
   uniforms: {
     uTime: { value: 0 },
 
-    uTime: { value: 0 },
+    uBigWavesElevation: { value: 0.237 },
+    uBigWavesFrequency: { value: new THREE.Vector2(0.51, 0.51) },
+    uBigWavesSpeed: { value: 1.844 },
 
-    uBigWavesElevation: { value: 0.554 },
-    uBigWavesFrequency: { value: new THREE.Vector2(0.51, 0.278) },
-    uBigWavesSpeed: { value: 0.575 },
-
-    uSmallWavesElevation: { value: 0.28 },
-    uSmallWavesFrequency: { value: 5.94 },
-    uSmallWavesSpeed: { value: 3.267 },
+    uSmallWavesElevation: { value: 0.051 },
+    uSmallWavesFrequency: { value: 22.413 },
+    uSmallWavesSpeed: { value: 0.885 },
     uSmallIterations: { value: 1 },
 
     uDepthColor: { value: waterDepthColor },
     uSurfaceColor: { value: new THREE.Color(0x05587f) },
-    uColorOffset: { value: 0.786 },
-    uColorMultiplier: { value: 7.703 },
+    uColorOffset: { value: 0.739 },
+    uColorMultiplier: { value: 4.996 },
   },
 });
 
