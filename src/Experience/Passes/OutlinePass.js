@@ -27,8 +27,8 @@ export default class OutlinePass {
     this.shader.edgeStrength = this.options.edgeStrength;
     this.shader.edgeGlow = this.options.edgeGlow;
     this.shader.pulsePeriod = this.options.pulsePeriod;
-    this.shader.visibleEdgeColor = this.options.visibleEdgeColor;
-    this.shader.hiddenEdgeColor = this.options.hiddenEdgeColor;
+    this.shader.visibleEdgeColor.set(this.options.visibleEdgeColor);
+    this.shader.hiddenEdgeColor.set(this.options.hiddenEdgeColor);
   }
   setPass() {
     this.shaderPass = this.shader;
@@ -36,6 +36,9 @@ export default class OutlinePass {
 
   addElementOutline(elem) {
     this.objects.push(elem);
+    console.log("adding ", elem);
+    console.log(this.objects);
+    console.log(this.shaderPass);
   }
   removeAllElements() {
     this.objects = [];

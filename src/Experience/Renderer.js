@@ -16,7 +16,7 @@ export default class Renderer {
     this.ditherPass = new DitherPass();
     this.outlinePass = new OutlinePass();
     this.addPass(this.ditherPass.shaderPass);
-    //this.addPass(this.outlinePass.shaderPass);
+    this.addPass(this.outlinePass.shaderPass);
   }
   setInstance() {
     this.base = new THREE.WebGLRenderer({

@@ -9,7 +9,6 @@ export default class World {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
-
     //wait for resources
     this.resources.on("ready", () => {
       //setup

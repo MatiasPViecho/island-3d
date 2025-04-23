@@ -34,7 +34,6 @@ export default class Experience {
     this.mouse = new Mouse();
     this.raycaster = new Raycaster();
 
-    //this.renderer.outlinePass.addElementOutline(this.world.bottle);
     /**
      * Events
      */

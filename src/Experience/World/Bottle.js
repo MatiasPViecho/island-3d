@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Experience from "../Experience";
+import EventEmitter from "../Utils/EventEmitter";
 export default class Bottle {
   constructor() {
     this.paper_name = "Plane002";
@@ -23,6 +24,7 @@ export default class Bottle {
     this.setBottleTexture();
     this.setPaperTexture();
     this.setModel();
+    this.addToOultine();
     //this.setAnimation();
     //debug
   }
@@ -57,7 +59,9 @@ export default class Bottle {
     this.model.rotation.y = -Math.PI / 4;
     this.model.rotation.x = -Math.PI / 8;
     this.model.scale.set(0.75, 0.75, 0.75);
-    //this.model.scale.set(0.02, 0.02, 0.02);
     this.scene.add(this.model);
+  }
+  addToOultine() {
+    this.experience.renderer.outlinePass.addElementOutline(this.model);
   }
 }
