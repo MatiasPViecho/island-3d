@@ -7,6 +7,8 @@ import World from "./World/World";
 import Resources from "./Utils/Resources";
 import sources from "./sources";
 import Debug from "./Utils/Debug";
+import Mouse from "./Utils/Mouse";
+import Raycaster from "./Utils/Raycaster";
 let instance = null;
 export default class Experience {
   constructor(canvas) {
@@ -29,7 +31,10 @@ export default class Experience {
     this.camera = new Camera(this);
     this.renderer = new Renderer();
     this.world = new World();
+    this.mouse = new Mouse();
+    this.raycaster = new Raycaster();
 
+    //this.renderer.outlinePass.addElementOutline(this.world.bottle);
     /**
      * Events
      */
@@ -43,6 +48,13 @@ export default class Experience {
     this.sizes.on("resize", () => {
       this.resize();
     });
+
+    this.mouse.on("mousemove", () => {
+      this.mousemove();
+    });
+  }
+  mousemove() {
+    this.raycaster.mousemove();
   }
   resize() {
     this.camera.resize();

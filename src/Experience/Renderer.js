@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import DitherPass from "./Passes/DitherPass";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import OutlinePass from "./Passes/OutlinePass";
 
 export default class Renderer {
   constructor() {
@@ -13,7 +14,9 @@ export default class Renderer {
     this.camera = this.experience.camera;
     this.setInstance();
     this.ditherPass = new DitherPass();
+    this.outlinePass = new OutlinePass();
     this.addPass(this.ditherPass.shaderPass);
+    this.addPass(this.outlinePass.shaderPass);
   }
   setInstance() {
     this.base = new THREE.WebGLRenderer({
