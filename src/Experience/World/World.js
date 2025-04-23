@@ -3,6 +3,7 @@ import Experience from "../Experience";
 import Environment from "./Environment";
 import Island from "./Island";
 import Water from "./Water";
+import Bottle from "./Bottle";
 export default class World {
   constructor() {
     this.experience = new Experience();
@@ -15,6 +16,7 @@ export default class World {
       //this.floor = new Floor();
       this.island = new Island();
       this.water = new Water();
+      this.bottle = new Bottle();
       this.environment = new Environment();
     });
   }
