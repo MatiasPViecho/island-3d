@@ -9,6 +9,7 @@ import sources from "./sources";
 import Debug from "./Utils/Debug";
 import Mouse from "./Utils/Mouse";
 import Raycaster from "./Utils/Raycaster";
+import Showcase from "./Utils/Showcase";
 let instance = null;
 export default class Experience {
   constructor(canvas) {
@@ -33,6 +34,7 @@ export default class Experience {
     this.world = new World();
     this.mouse = new Mouse();
     this.raycaster = new Raycaster();
+    this.showcase = new Showcase();
 
     /**
      * Events
@@ -63,6 +65,7 @@ export default class Experience {
     //this.camera.update();
     this.world.update();
     this.renderer.update();
+    this.showcase.update();
   }
   destroy() {
     this.sizes.off("resize");

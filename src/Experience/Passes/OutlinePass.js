@@ -36,9 +36,6 @@ export default class OutlinePass {
 
   addElementOutline(elem) {
     this.objects.push(elem);
-    console.log("adding ", elem);
-    console.log(this.objects);
-    console.log(this.shaderPass);
   }
   removeAllElements() {
     this.objects = [];

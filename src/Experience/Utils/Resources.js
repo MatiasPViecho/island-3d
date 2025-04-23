@@ -45,13 +45,11 @@ export default class Resources extends EventEmitter {
         });
       }
     }
-    console.log(this.items);
   }
   sourceLoaded(source, file) {
     this.items[source.name] = file;
     this.loaded++;
     if (this.loaded == this.toLoad) {
-      console.log("ready");
       this.trigger("ready");
     }
   }
