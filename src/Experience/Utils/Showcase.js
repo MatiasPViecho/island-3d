@@ -1,3 +1,4 @@
+import { Vector3, Vector4 } from "three";
 import Experience from "../Experience";
 import DarkLayer from "../Layer/DarkLayer";
 import gsap from "gsap";
@@ -17,17 +18,23 @@ export default class Showcase {
       scale: null,
     };
     window.addEventListener("click", () => {
-      if (
-        this.experience.raycaster &&
-        this.experience.raycaster.currentIntersect
-      ) {
-        this.applyItem(this.experience.raycaster.currentIntersect);
+      if (this.itemShowcasing) {
+        this.removeItemShowcasing(this.itemRef);
+      } else {
+        if (
+          this.experience.raycaster &&
+          this.experience.raycaster.currentIntersect
+        ) {
+          this.applyItem(this.experience.raycaster.currentIntersect);
+        }
       }
     });
   }
 
   removeItemShowcasing(item) {
+    console.log("trying remove");
     try {
+      console.log(item.position.x, this.previousProperties.position.x);
       item.position.copy(this.previousProperties.position);
       item.scale.copy(this.previousProperties.scale);
       item.quaternion.copy(this.previousProperties.rotation);
@@ -41,7 +48,17 @@ export default class Showcase {
   }
 
   addItemShowcasing(item) {
-    this.tweakProperties(item, item.position, item.quaternion, item.scale);
+    this.tweakProperties(
+      item,
+      new Vector3(item.position.x, item.position.y, item.position.z),
+      new Vector4(
+        item.quaternion.x,
+        item.quaternion.y,
+        item.quaternion.z,
+        item.quaternion.w
+      ),
+      new Vector3(item.scale.x, item.scale.y, item.scale.z)
+    );
     this.itemRef = item;
     this.darkLayer.apply();
   }
@@ -54,16 +71,21 @@ export default class Showcase {
   }
 
   applyItem(item) {
-    if (item && item.object && item.object.parent.name == "BottleAll") {
-      this.addItemShowcasing(item.object.parent.parent);
-      this.startShowcase(
-        item.object.parent.parent,
-        -Math.PI / 4,
-        Math.PI / 4,
-        0,
-        0.25,
-        0.75
-      );
+    try {
+      if (item && item.object && item.object.parent.name == "BottleAll") {
+        this.addItemShowcasing(item.object.parent.parent);
+        this.startShowcase(
+          item.object.parent.parent,
+          -Math.PI / 4,
+          Math.PI / 4,
+          0,
+          0.25,
+          0.75
+        );
+      }
+      this.itemShowcasing = true;
+    } catch (e) {
+      console.error(e);
     }
   }
 
