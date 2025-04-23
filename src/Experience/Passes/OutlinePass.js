@@ -31,7 +31,7 @@ export default class OutlinePass {
     this.shader.hiddenEdgeColor = this.options.hiddenEdgeColor;
   }
   setPass() {
-    this.shaderPass = new ShaderPass(this.shader);
+    this.shaderPass = this.shader;
   }
 
   addElementOutline(elem) {
