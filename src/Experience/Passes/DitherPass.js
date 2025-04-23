@@ -27,11 +27,6 @@ export default class DitherPass {
   }
 
   resize() {
-    console.log("resizing dither pass");
     this.shaderPass.uniforms.uResolution.value = this.sizes.resolution;
-    console.log(
-      this.shader.uniforms.uResolution.value.x,
-      this.shader.uniforms.uResolution.value.y
-    );
   }
 }

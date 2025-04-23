@@ -12,7 +12,6 @@ export default class Renderer {
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
     this.setInstance();
-    this.setRenderPass();
     this.ditherPass = new DitherPass();
     this.addPass(this.ditherPass.shaderPass);
   }
@@ -28,11 +27,11 @@ export default class Renderer {
     this.base.setSize(this.sizes.width, this.sizes.height);
     this.base.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
     this.instance = new EffectComposer(this.base, this.renderTarget);
+    this.instance.setSize(this.sizes.width, this.sizes.height);
+    this.instance.setPixelRatio(this.sizes.pixelRatio);
     this.renderPass = new RenderPass(this.scene, this.camera.instance);
     this.instance.addPass(this.renderPass);
   }
-
-  setRenderPass() {}
 
   addPass(pass) {
     try {
