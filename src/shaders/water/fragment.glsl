@@ -24,7 +24,7 @@ void main()
     vec3 light = vec3(0.0);
     light += directionalLight(
         vec3(1.0),               // light Color
-        7.0,                    // light Intensity
+        3.0,                    // light Intensity
         normal,                 //Normal
         vec3(0.0, 1.25, 0.0),   //Light Position
         viewDirection,          //View Direction
@@ -32,7 +32,7 @@ void main()
     );
     light += pointLight(
         vec3(1.0),               // light Color
-        20.0,                    // light Intensity
+        8.0,                    // light Intensity
         normal,                 //Normal
         vec3(4.0, 1.0, 3.0),   //Light Position
         viewDirection,          //View Direction

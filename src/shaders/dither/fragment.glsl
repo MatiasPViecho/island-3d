@@ -3,12 +3,16 @@
  https://blog.maximeheckel.com/posts/the-art-of-dithering-and-retro-shading-web/
   */
 precision highp float;
-varying vec2 vUv;
 uniform sampler2D tDiffuse;
 
 uniform vec2 uResolution;
 uniform float uColorNum;
 uniform float uPixelSize;
+varying vec2 vUv;
+varying vec3 vNormal;
+varying vec3 vPosition;
+
+
 
 const float bayerMatrix8x8[64] = float[64](
     0.0/ 64.0, 48.0/ 64.0, 12.0/ 64.0, 60.0/ 64.0,  3.0/ 64.0, 51.0/ 64.0, 15.0/ 64.0, 63.0/ 64.0,
@@ -20,6 +24,8 @@ const float bayerMatrix8x8[64] = float[64](
   10.0/ 64.0, 58.0/ 64.0,  6.0/ 64.0, 54.0/ 64.0,  9.0/ 64.0, 57.0/ 64.0,  5.0/ 64.0, 53.0/ 64.0,
   42.0/ 64.0, 26.0/ 64.0, 38.0/ 64.0, 22.0/ 64.0, 41.0/ 64.0, 25.0/ 64.0, 37.0/ 64.0, 21.0 / 64.0
 );
+
+
 const vec3 palette[16] = vec3[16](
     vec3(1.0, 0.0, 0.0),  // Red
     vec3(0.0, 1.0, 0.0),  // Green
@@ -120,69 +126,34 @@ vec3[2] closestColors(float hue) {
 }
 
 
-
-// vec3 dither(vec2 uv,vec3 color){
-//   color = rgb2hsl(color);
-	
-// 	int x = int(mod(uv.x * uResolution.x, 8.));
-// 	int y = int(mod(uv.y * uResolution.y, 8.));
-	
-// 	float threshold = bayerMatrix8x8[y * 8 + x] + 1.0 / 64.0 + 0.130;
-	
-// 	vec3[2] Colors = closestColors(color.x);
-	
-// 	float hueDiff = hueDistance(color.x, Colors[0].x) / hueDistance(Colors[1].x, Colors[0].x);
-	
-// 	float l1 = lightnessStep(max((color.z - .125), 0.));
-// 	float l2 = lightnessStep(min((color.z + .124), 1.));
-// 	float lightnessDiff = (color.z - l1) / (l2 - l1);
-	
-// 	vec3 resultColor = (hueDiff < threshold) ? Colors[0] : Colors[1];
-// 	resultColor.z = (lightnessDiff < threshold) ? l1 : l2;
-	
-// 	float s1 = SaturationStep(max((color.y - .125), 0.));
-// 	float s2 = SaturationStep(min((color.y + .124), 1.));
-// 	float SaturationDiff = (color.y - s1) / (s2 - s1);
-	
-//   resultColor.y = (SaturationDiff < threshold) ? s1: s2;
-	
-// 	return hsl2rgb(resultColor);
-	
-// }
-
 vec3 dither(vec2 uv, vec3 color) {
   int x = int(uv.x * uResolution.x) % 8;
   int y = int(uv.y * uResolution.y) % 8;
   float threshold = bayerMatrix8x8[y * 8 + x] - 0.88;
 
   color.rgb += threshold;
-  color.r = floor(color.r * (uColorNum - 1.0) + 0.5) / (uColorNum - 1.0) + 0.15;
-  color.g = floor(color.g * (uColorNum - 1.0) + 0.5) / (uColorNum - 1.0) + 0.15;
-  color.b = floor(color.b * (uColorNum - 1.0) + 0.5) / (uColorNum - 1.0) + 0.15;
+  color.r = floor(color.r * (uColorNum - 1.0) + 0.5) / (uColorNum - 1.0);
+  color.g = floor(color.g * (uColorNum - 1.0) + 0.5) / (uColorNum - 1.0);
+  color.b = floor(color.b * (uColorNum - 1.0) + 0.5) / (uColorNum - 1.0);
 
   return color;
 }
 
 
-/**
-* ASCII Effect - https://www.shadertoy.com/view/lssGDj
-*/
 
-float character(int n, vec2 p)
+vec3 ACESFilm(vec3 x)
 {
-	p = floor(p*vec2(-4.0, 4.0) + 2.5);
-    if (clamp(p.x, 0.0, 4.0) == p.x)
-	{
-        if (clamp(p.y, 0.0, 4.0) == p.y)	
-		{
-        	int a = int(round(p.x) + 5.0 * round(p.y));
-			if (((n >> a) & 1) == 1) return 1.0;
-		}	
-    }
-	return 0.0;
+    float a = 2.51f;
+    float b = 0.03f;
+    float c = 2.43f;
+    float d = 0.59f;
+    float e = 0.14f;
+    return clamp((x*(a*x + b)) / (x*(c*x + d) + e), 0.0f, 1.0f);
 }
 
+
 #include ../includes/ambientLight.glsl
+#include ../includes/directionalLight.glsl
 void main()
 {
   
@@ -190,17 +161,24 @@ void main()
   // frankensteneised method 
   vec2 normalizedPixelSize = uPixelSize / uResolution;
   vec2 uvPixel = normalizedPixelSize * floor(vUv / normalizedPixelSize);
-   vec4 color = texture2D(tDiffuse, uvPixel);
+  vec4 color = texture2D(tDiffuse, uvPixel);
+  vec3 viewDirection = normalize(vPosition - cameraPosition);
   color.rgb = dither(vUv, color.rgb);
 
-  // add lights to allow for a more "happy" scene
   // lights 
   vec3 light = vec3(0.0);
 
-  light += ambientLight(vec3(1.0), 2.0);
-
+  light += ambientLight(vec3(1.0), 4.0);
+  // light += ambientLight( 
+  //   vec3(0.2),
+  //   0.04);
+  
   // apply lights
+  //color.rgb = ACESFilm(color.rgb);
   color.rgb *= light;
+  //color.rgb = ACESFilm(color.rgb);
+
+  //color.rgb = pow(col, vec3(1.0/1.8));
 
   gl_FragColor = color;
 }
