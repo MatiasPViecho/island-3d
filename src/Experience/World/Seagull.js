@@ -5,6 +5,7 @@ import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 export default class Seagull {
   constructor(amount) {
     this.seagull_speed = 5;
+    this.seagull_restart_pos = 100;
     this.seagulls = [];
     this.mixers = [];
     this.experience = new Experience();
@@ -19,7 +20,13 @@ export default class Seagull {
         .min(-10)
         .max(10)
         .step(0.01)
-        .name("seagull speed");
+        .name("Speed");
+      this.debugFolder
+        .add(this, "seagull_restart_pos")
+        .min(-25)
+        .max(100)
+        .step(0.1)
+        .name("restart POS");
     }
     this.resource = this.resources.items.seagullModel;
     this.instanciateModels(amount);
@@ -49,8 +56,6 @@ export default class Seagull {
       this.seagulls.push(model);
       this.scene.add(model);
     }
-    console.log(this.seagulls);
-    console.log(this.scene);
   }
   update() {
     if (this.mixers) {
@@ -62,7 +67,7 @@ export default class Seagull {
       seagull.rotation.z =
         Math.sin(this.time.clock.deltaTime) * this.seagull_speed;
       seagull.position.x += this.time.clock.deltaTime * this.seagull_speed;
-      if (seagull.position.x > 100) {
+      if (seagull.position.x > this.seagull_restart_pos) {
         seagull.position.x = seagull.INITIAL_X_POS;
       }
     });

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Experience from "../Experience";
-import EventEmitter from "../Utils/EventEmitter";
+import bottleVertexShader from "../../shaders/bottle/vertex.glsl";
+import bottleFragmentShader from "../../shaders/bottle/fragment.glsl";
 export default class Bottle {
   constructor() {
     this.paper_name = "Plane002";
@@ -20,7 +21,6 @@ export default class Bottle {
     this.resource = this.resources.items.bottleModel;
     this.paperBakedTexture = this.resources.items.bakedPaper;
     this.bottleBakedTexture = this.resources.items.bakedBottle;
-
     this.setBottleTexture();
     this.setPaperTexture();
     this.setModel();
@@ -31,8 +31,17 @@ export default class Bottle {
   setBottleTexture() {
     this.bottleBakedTexture.flipY = false;
     this.bottleBakedTexture.colorSpace = THREE.SRGBColorSpace;
-    this.bottleTexture = new THREE.MeshBasicMaterial({
-      map: this.bottleBakedTexture,
+    this.bakedBottleUniforms = {
+      map: { value: this.bottleBakedTexture },
+      uTime: { value: 0 },
+      uShowcaseBrightness: {
+        value: null,
+      },
+    };
+    this.bottleTexture = new THREE.ShaderMaterial({
+      uniforms: this.bakedBottleUniforms,
+      vertexShader: bottleVertexShader,
+      fragmentShader: bottleFragmentShader,
     });
   }
   setPaperTexture() {

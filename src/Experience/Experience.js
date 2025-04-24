@@ -30,8 +30,8 @@ export default class Experience {
     this.scene = new THREE.Scene();
     this.resources = new Resources(sources);
     this.camera = new Camera(this);
-    this.renderer = new Renderer();
     this.world = new World();
+    this.renderer = new Renderer();
     this.mouse = new Mouse();
     this.raycaster = new Raycaster();
     this.showcase = new Showcase();
@@ -52,6 +52,11 @@ export default class Experience {
 
     this.mouse.on("mousemove", () => {
       this.mousemove();
+    });
+
+    this.showcase.on("showcase", (e) => {
+      this.renderer.manageOutline(e);
+      this.raycaster.managePointer(!e);
     });
   }
   mousemove() {

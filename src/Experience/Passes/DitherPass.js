@@ -7,8 +7,36 @@ export default class DitherPass {
   constructor() {
     this.experience = new Experience();
     this.sizes = this.experience.sizes;
+    this.debug = this.experience.debug;
+    this.uniformOptions = {
+      pointLightViewDirectionX: 1.0,
+      pointLightViewDirectionY: 1.0,
+      pointLightViewDirectionZ: 1.0,
+    };
     this.setBaseShader();
     this.setPass();
+    // debug
+    if (this.debug.active) {
+      this.debugFolder = this.debug.ui.addFolder("Dither");
+      this.debugFolder
+        .add(this.uniformOptions, "pointLightViewDirectionX")
+        .min(-2.0)
+        .max(2.0)
+        .step(0.01)
+        .name("X direction MULT");
+      this.debugFolder
+        .add(this.uniformOptions, "pointLightViewDirectionY")
+        .min(-2.0)
+        .max(2.0)
+        .step(0.01)
+        .name("Y direction MULT");
+      this.debugFolder
+        .add(this.uniformOptions, "pointLightViewDirectionZ")
+        .min(-2.0)
+        .max(2.0)
+        .step(0.01)
+        .name("Z direction MULT");
+    }
   }
   setBaseShader() {
     this.shader = {
@@ -17,6 +45,15 @@ export default class DitherPass {
         uColorNum: new Uniform(32.0),
         uPixelSize: new Uniform(2.0),
         tDiffuse: new Uniform(null),
+        pointLightViewDirectionX: new Uniform(
+          this.uniformOptions.pointLightViewDirectionX
+        ),
+        pointLightViewDirectionY: new Uniform(
+          this.uniformOptions.pointLightViewDirectionY
+        ),
+        pointLightViewDirectionZ: new Uniform(
+          this.uniformOptions.pointLightViewDirectionZ
+        ),
       },
       vertexShader: `${DitherVertexShader}`,
       fragmentShader: `${DitherFragmentShader}`,

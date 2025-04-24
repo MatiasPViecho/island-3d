@@ -29,4 +29,9 @@ export default [
     type: "gltfModel",
     path: "models/seagull.glb",
   },
+  {
+    name: "pureskyEnvmap",
+    type: "rgbeTexture",
+    path: "textures/kloppenheim_06_puresky_1k.hdr",
+  },
 ];

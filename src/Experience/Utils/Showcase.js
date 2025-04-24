@@ -2,11 +2,12 @@ import { Vector3, Vector4 } from "three";
 import Experience from "../Experience";
 import DarkLayer from "../Layer/DarkLayer";
 import gsap from "gsap";
+import EventEmitter from "./EventEmitter";
 const SHOWCASED_ROTATION_SPEED = 0.25;
-export default class Showcase {
+export default class Showcase extends EventEmitter {
   constructor() {
+    super();
     this.experience = new Experience();
-    this.darkLayer = new DarkLayer();
     this.time = this.experience.time;
     this.camera = this.experience.camera.instance;
     this.itemShowcasing = false;
@@ -28,18 +29,16 @@ export default class Showcase {
           this.applyItem(this.experience.raycaster.currentIntersect);
         }
       }
+      this.trigger("showcase", [this.itemShowcasing]);
     });
   }
 
   removeItemShowcasing(item) {
-    console.log("trying remove");
     try {
-      console.log(item.position.x, this.previousProperties.position.x);
       item.position.copy(this.previousProperties.position);
       item.scale.copy(this.previousProperties.scale);
       item.quaternion.copy(this.previousProperties.rotation);
       this.tweakProperties(null, null, null, null);
-      this.darkLayer.destroy();
       this.itemRef = null;
       this.itemShowcasing = false;
     } catch (e) {
@@ -60,7 +59,6 @@ export default class Showcase {
       new Vector3(item.scale.x, item.scale.y, item.scale.z)
     );
     this.itemRef = item;
-    this.darkLayer.apply();
   }
 
   tweakProperties(item, pos, rotation, scale) {

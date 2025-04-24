@@ -53,4 +53,12 @@ export default class Renderer {
   update() {
     this.instance.render(this.scene, this.camera.instance);
   }
+
+  manageOutline(bool) {
+    if (!bool) {
+      this.outlinePass.enable();
+    } else {
+      this.outlinePass.disable();
+    }
+  }
 }

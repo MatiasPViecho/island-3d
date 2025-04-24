@@ -1,5 +1,4 @@
 import Experience from "../Experience";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { OutlinePass as THREEOutlinePass } from "three/examples/jsm/postprocessing/OutlinePass.js";
 
 export default class OutlinePass {
