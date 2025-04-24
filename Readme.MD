@@ -22,3 +22,4 @@ I've read/research some stuff while making the project, sadly placing them here 
 - https://blog.maximeheckel.com/posts/the-art-of-dithering-and-retro-shading-web
 - https://discourse.threejs.org/t/solved-how-do-we-use-map-uniform-with-custom-shadermaterial/1919/21?page=2
 - https://www.shadertoy.com/view/lssGDj (not used but still interesting to see)
+- https://discourse.threejs.org/t/how-to-clone-a-model-thats-loaded-with-gltfloader/23723/9
