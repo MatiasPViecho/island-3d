@@ -27,4 +27,9 @@ export default class World {
       this.seagull.update();
     }
   }
+
+  showcase(e) {
+    this.seagull.showcase(e);
+    this.water.showcase(e);
+  }
 }

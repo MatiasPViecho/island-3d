@@ -8,6 +8,8 @@ export default class Water {
     this.scene = this.experience.scene;
     this.time = this.experience.time;
     this.debug = this.experience.debug;
+    this.shouldStopAnimation = false;
+    this.missingTime = 0;
     /**
      * Debug
      */
@@ -62,6 +64,16 @@ export default class Water {
   }
 
   update() {
-    this.waterMaterial.uniforms.uTime.value = this.time.clock.elapedTime;
+    if (!this.shouldStopAnimation) {
+      this.waterMaterial.uniforms.uTime.value =
+        this.time.clock.elapedTime + this.missingTime;
+    } else {
+      this.missingTime =
+        this.waterMaterial.uniforms.uTime.value - this.time.clock.elapedTime;
+    }
+  }
+
+  showcase(e) {
+    this.shouldStopAnimation = e;
   }
 }

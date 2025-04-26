@@ -57,6 +57,7 @@ export default class Experience {
     this.showcase.on("showcase", (e) => {
       this.renderer.manageOutline(e);
       this.raycaster.managePointer(!e);
+      this.world.showcase(e);
     });
   }
   mousemove() {

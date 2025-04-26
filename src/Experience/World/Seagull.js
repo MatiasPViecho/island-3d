@@ -13,6 +13,7 @@ export default class Seagull {
     this.resources = this.experience.resources;
     this.time = this.experience.time;
     this.debug = this.experience.debug;
+    this.shouldStopAnimation = false;
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("seagull");
       this.debugFolder
@@ -58,7 +59,7 @@ export default class Seagull {
     }
   }
   update() {
-    if (this.mixers) {
+    if (this.mixers && !this.shouldStopAnimation) {
       this.mixers.forEach((mixer) => {
         mixer.update(this.time.clock.deltaTime);
       });
@@ -66,10 +67,16 @@ export default class Seagull {
     this.seagulls.forEach((seagull) => {
       seagull.rotation.z =
         Math.sin(this.time.clock.deltaTime) * this.seagull_speed;
-      seagull.position.x += this.time.clock.deltaTime * this.seagull_speed;
+      if (!this.shouldStopAnimation) {
+        seagull.position.x += this.time.clock.deltaTime * this.seagull_speed;
+      }
       if (seagull.position.x > this.seagull_restart_pos) {
         seagull.position.x = seagull.INITIAL_X_POS;
       }
     });
+  }
+
+  showcase(e) {
+    this.shouldStopAnimation = e;
   }
 }

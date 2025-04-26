@@ -28,6 +28,5 @@ export default class Raycaster {
 
   managePointer(bool) {
     this.allowPointer = bool;
-    console.log("new pointer value =>", this.allowPointer);
   }
 }
