@@ -14,10 +14,26 @@ export default class Seagull {
     this.time = this.experience.time;
     this.debug = this.experience.debug;
     this.shouldStopAnimation = false;
-    this.playbackSoundTime = 3200;
-    this.audioStopwatch = this.playbackSoundTime; // audio play in ms
+    this.playedDuringRound = false;
+
+    // Debug audio
+    this.divider = 2;
+    this.sum = 0.2;
+
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("seagull");
+      this.debugFolder
+        .add(this, "divider")
+        .min(-100)
+        .max(100)
+        .step(1)
+        .name("audio div");
+      this.debugFolder
+        .add(this, "sum")
+        .min(-1)
+        .max(1)
+        .step(0.01)
+        .name("audio sum");
       this.debugFolder
         .add(this, "seagull_speed")
         .min(-10)
@@ -74,15 +90,24 @@ export default class Seagull {
       }
       if (seagull.position.x > this.seagull_restart_pos) {
         seagull.position.x = seagull.INITIAL_X_POS;
-      }
-      if (this.audio) {
-        if (this.audioStopwatch <= 0) {
-          this.audio.play();
-          this.audioStopwatch = this.playbackSoundTime;
-        }
-        this.audioStopwatch -= this.time.clock.elapedTime;
+        if (this.playedDuringRound) this.playedDuringRound = false;
       }
     });
+    if (
+      this.experience.userInteracted &&
+      Math.abs(this.seagulls[0].position.x / 4) <
+        this.experience.camera.instance.position.x
+    ) {
+      let calculatedVolume =
+        0.7 -
+        Math.abs(this.seagulls[0].position.x / 8) / this.divider +
+        this.sum;
+      this.audio.volume = Math.min(1, Math.max(0, calculatedVolume));
+      if (this.audio.volume > 0 && !this.playedDuringRound) {
+        this.audio.play();
+        this.playedDuringRound = true;
+      }
+    }
   }
 
   showcase(e) {
@@ -93,7 +118,7 @@ export default class Seagull {
     try {
       this.audio = audio;
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 }

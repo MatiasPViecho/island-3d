@@ -16,7 +16,8 @@ export default class World {
       this.bottle = new Bottle();
       this.seagull = new Seagull(7);
       this.environment = new Environment();
-      this.seagull.addAudio(this.resources.items.dummyAudio);
+      this.seagull.addAudio(this.resources.items.seagullAudio);
+      this.water.addAudio(this.resources.items.waterAudio);
     });
   }
 

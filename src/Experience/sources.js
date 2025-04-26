@@ -39,4 +39,15 @@ export default [
     type: "audio",
     path: "audios/dummy.mp3",
   },
+  {
+    name: "seagull",
+    type: "audio",
+    path: "audios/62159__freesound61476__seagull-toy-raw.wav",
+  },
+
+  {
+    name: "water",
+    type: "audio",
+    path: "audios/168909__toam__rushing_waterwind-rec_samsung_hmx-f80_camcorder.flac",
+  },
 ];

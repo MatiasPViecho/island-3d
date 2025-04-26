@@ -35,7 +35,7 @@ export default class Experience {
     this.mouse = new Mouse();
     this.raycaster = new Raycaster();
     this.showcase = new Showcase();
-
+    this.userInteracted = false;
     /**
      * Events
      */
@@ -59,6 +59,33 @@ export default class Experience {
       this.raycaster.managePointer(!e);
       this.world.showcase(e);
     });
+
+    this.setBaseUserInteractions();
+  }
+
+  setBaseUserInteractions() {
+    window.addEventListener("click", () => {
+      this.userInteracted = true;
+      this.markUserInteracted;
+    });
+    window.addEventListener("keydown", () => {
+      this.userInteracted = true;
+      this.markUserInteracted;
+    });
+    window.addEventListener("mousedown", () => {
+      this.userInteracted = true;
+      this.markUserInteracted;
+    });
+    window.addEventListener("touchstart", () => {
+      this.userInteracted = true;
+      this.markUserInteracted;
+    });
+  }
+  markUserInteracted() {
+    window.removeEventListener("click", this.markUserInteracted);
+    window.removeEventListener("keydown", this.markUserInteracted);
+    window.removeEventListener("mousedown", this.markUserInteracted);
+    window.removeEventListener("touchstart", this.markUserInteracted);
   }
   mousemove() {
     this.raycaster.mousemove();

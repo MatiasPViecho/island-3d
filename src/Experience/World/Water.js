@@ -76,4 +76,12 @@ export default class Water {
   showcase(e) {
     this.shouldStopAnimation = e;
   }
+
+  addAudio(audio) {
+    try {
+      this.audio = audio;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
