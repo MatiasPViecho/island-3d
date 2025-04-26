@@ -84,4 +84,14 @@ export default class Water {
       console.error(e);
     }
   }
+
+  allowSounds() {
+    this.playSound();
+  }
+
+  playSound() {
+    this.audio.loop = true;
+    this.audio.volume = 0.3;
+    this.audio.play();
+  }
 }

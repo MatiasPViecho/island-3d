@@ -34,4 +34,9 @@ export default class World {
     if (this.seagull) this.seagull.showcase(e);
     if (this.water) this.water.showcase(e);
   }
+
+  allowSounds() {
+    this.seagull.allowSounds();
+    this.water.allowSounds();
+  }
 }

@@ -15,6 +15,7 @@ export default class Seagull {
     this.debug = this.experience.debug;
     this.shouldStopAnimation = false;
     this.playedDuringRound = false;
+    this.canPlaySounds = false;
 
     // Debug audio
     this.divider = 2;
@@ -94,12 +95,12 @@ export default class Seagull {
       }
     });
     if (
-      this.experience.userInteracted &&
+      this.canPlaySounds &&
       Math.abs(this.seagulls[0].position.x / 4) <
         this.experience.camera.instance.position.x
     ) {
       let calculatedVolume =
-        0.7 -
+        0.2 -
         Math.abs(this.seagulls[0].position.x / 8) / this.divider +
         this.sum;
       this.audio.volume = Math.min(1, Math.max(0, calculatedVolume));
@@ -120,5 +121,9 @@ export default class Seagull {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  allowSounds() {
+    this.canPlaySounds = true;
   }
 }

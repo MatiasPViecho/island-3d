@@ -62,31 +62,35 @@ export default class Experience {
 
     this.setBaseUserInteractions();
   }
-
+  allowSounds() {
+    this.world.allowSounds();
+  }
   setBaseUserInteractions() {
     window.addEventListener("click", () => {
-      this.userInteracted = true;
+      this.allowSounds();
       this.markUserInteracted;
     });
     window.addEventListener("keydown", () => {
-      this.userInteracted = true;
+      this.allowSounds();
       this.markUserInteracted;
     });
     window.addEventListener("mousedown", () => {
-      this.userInteracted = true;
+      this.allowSounds();
       this.markUserInteracted;
     });
     window.addEventListener("touchstart", () => {
-      this.userInteracted = true;
+      this.allowSounds();
       this.markUserInteracted;
     });
   }
   markUserInteracted() {
+    console.log("user interacted!");
     window.removeEventListener("click", this.markUserInteracted);
     window.removeEventListener("keydown", this.markUserInteracted);
     window.removeEventListener("mousedown", this.markUserInteracted);
     window.removeEventListener("touchstart", this.markUserInteracted);
   }
+
   mousemove() {
     this.raycaster.mousemove();
   }
