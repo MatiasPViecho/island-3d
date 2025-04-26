@@ -14,6 +14,8 @@ export default class Seagull {
     this.time = this.experience.time;
     this.debug = this.experience.debug;
     this.shouldStopAnimation = false;
+    this.playbackSoundTime = 3200;
+    this.audioStopwatch = this.playbackSoundTime; // audio play in ms
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("seagull");
       this.debugFolder
@@ -73,10 +75,25 @@ export default class Seagull {
       if (seagull.position.x > this.seagull_restart_pos) {
         seagull.position.x = seagull.INITIAL_X_POS;
       }
+      if (this.audio) {
+        if (this.audioStopwatch <= 0) {
+          this.audio.play();
+          this.audioStopwatch = this.playbackSoundTime;
+        }
+        this.audioStopwatch -= this.time.clock.elapedTime;
+      }
     });
   }
 
   showcase(e) {
     this.shouldStopAnimation = e;
+  }
+
+  addAudio(audio) {
+    try {
+      this.audio = audio;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

@@ -7,6 +7,7 @@ export default class Clock {
     }
     instance = this;
     this.clock = new THREEClock();
+    this.elapedTime = 0;
     this.previousTime = 0;
   }
   update() {

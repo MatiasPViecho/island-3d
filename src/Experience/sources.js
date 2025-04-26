@@ -34,4 +34,9 @@ export default [
     type: "rgbeTexture",
     path: "textures/kloppenheim_06_puresky_1k.hdr",
   },
+  {
+    name: "dummy",
+    type: "audio",
+    path: "audios/dummy.mp3",
+  },
 ];

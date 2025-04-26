@@ -43,11 +43,13 @@ export default class Resources extends EventEmitter {
         this.loaders.rgbeLoader.load(source.path, (file) => {
           this.sourceLoaded(source, file);
         });
+      } else if (source.type === "audio") {
+        this.sourceLoaded(source, new Audio(source.path), true);
       }
     }
   }
-  sourceLoaded(source, file) {
-    this.items[source.name] = file;
+  sourceLoaded(source, file, isAudio = false) {
+    this.items[isAudio ? source.name + "Audio" : source.name] = file;
     this.loaded++;
     if (this.loaded == this.toLoad) {
       this.trigger("ready");

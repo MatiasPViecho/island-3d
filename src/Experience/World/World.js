@@ -16,6 +16,7 @@ export default class World {
       this.bottle = new Bottle();
       this.seagull = new Seagull(7);
       this.environment = new Environment();
+      this.seagull.addAudio(this.resources.items.dummyAudio);
     });
   }
 
@@ -29,7 +30,7 @@ export default class World {
   }
 
   showcase(e) {
-    this.seagull.showcase(e);
-    this.water.showcase(e);
+    if (this.seagull) this.seagull.showcase(e);
+    if (this.water) this.water.showcase(e);
   }
 }
