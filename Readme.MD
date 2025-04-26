@@ -29,3 +29,7 @@ I've read/research some stuff while making the project, sadly placing them here 
 seagull-toy-raw.wav by freesound61476 -- https://freesound.org/s/62159/ -- License: Attribution 4.0
 
 Rushing_water+wind-Rec_Samsung_HMX-F80_Camcorder.flac by toam -- https://freesound.org/s/168909/ -- License: Attribution 3.0
+
+"Kalimba Relaxation Music" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/

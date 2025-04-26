@@ -50,4 +50,9 @@ export default [
     type: "audio",
     path: "audios/168909__toam__rushing_waterwind-rec_samsung_hmx-f80_camcorder.flac",
   },
+  {
+    name: "kalimba",
+    type: "audio",
+    path: "audios/Kalimba_Relaxation_Music.mp3",
+  },
 ];

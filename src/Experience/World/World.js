@@ -4,6 +4,7 @@ import Island from "./Island";
 import Water from "./Water";
 import Bottle from "./Bottle";
 import Seagull from "./Seagull";
+import Soundtrack from "../Utils/Soundtrack";
 export default class World {
   constructor() {
     this.experience = new Experience();
@@ -16,8 +17,10 @@ export default class World {
       this.bottle = new Bottle();
       this.seagull = new Seagull(7);
       this.environment = new Environment();
+      this.soundtrack = new Soundtrack();
       this.seagull.addAudio(this.resources.items.seagullAudio);
       this.water.addAudio(this.resources.items.waterAudio);
+      this.soundtrack.addSoundtrack(this.resources.items.kalimbaAudio);
     });
   }
 
@@ -38,5 +41,6 @@ export default class World {
   allowSounds() {
     this.seagull.allowSounds();
     this.water.allowSounds();
+    this.soundtrack.allowSounds();
   }
 }
