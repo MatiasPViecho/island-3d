@@ -23,3 +23,9 @@ I've read/research some stuff while making the project, sadly placing them here 
 - https://discourse.threejs.org/t/solved-how-do-we-use-map-uniform-with-custom-shadermaterial/1919/21?page=2
 - https://www.shadertoy.com/view/lssGDj (not used but still interesting to see)
 - https://discourse.threejs.org/t/how-to-clone-a-model-thats-loaded-with-gltfloader/23723/9
+
+#### Credits
+
+seagull-toy-raw.wav by freesound61476 -- https://freesound.org/s/62159/ -- License: Attribution 4.0
+
+Rushing_water+wind-Rec_Samsung_HMX-F80_Camcorder.flac by toam -- https://freesound.org/s/168909/ -- License: Attribution 3.0
