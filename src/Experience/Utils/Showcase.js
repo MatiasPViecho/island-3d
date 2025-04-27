@@ -12,7 +12,7 @@ export default class Showcase extends EventEmitter {
     this.text = new TextUtil();
     this.time = this.experience.time;
     this.camera = this.experience.camera.instance;
-
+    this.allowRemoval = false;
     this.itemShowcasing = false;
     this.itemRef = null;
 
@@ -25,7 +25,7 @@ export default class Showcase extends EventEmitter {
 
     window.addEventListener("click", () => {
       if (this.itemShowcasing) {
-        this.removeItemShowcasing(this.itemRef);
+        if (this.allowRemoval) this.removeItemShowcasing(this.itemRef);
       } else {
         if (
           this.experience.raycaster &&
@@ -33,6 +33,7 @@ export default class Showcase extends EventEmitter {
         ) {
           this.applyItem(this.experience.raycaster.currentIntersect);
         }
+        this.allowRemoval = false;
       }
       this.trigger("showcase", [this.itemShowcasing]);
     });
@@ -90,9 +91,12 @@ export default class Showcase extends EventEmitter {
         "<p>There is a <strong>message</strong> in the <strong>bottle</strong>.</p><p>Read it?</p>";
     }
     this.text.addText(this.bottleText, this.dummy);
+    this.text.on("clicked", (eff, val) => {
+      this.manageButtonClick(eff, val);
+    });
   }
-  dummy() {
-    console.log("test");
+  manageButtonClick(eff, val) {
+    this.allowRemoval = !val;
   }
   initiateVisual(item) {
     if (item && item.object && item.object.parent.name == "BottleAll") {

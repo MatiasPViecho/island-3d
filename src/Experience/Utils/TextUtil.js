@@ -30,21 +30,35 @@ export default class TextUtil extends EventEmitter {
     this.textDiv.classList.add("vt323-regular", "message");
     this.optionsDiv.classList.add("vt323-regular", "options");
     this.currentEffect = effect;
-    this.yesButton.addEventListener("click", effect);
     this.optionsDiv.appendChild(this.yesButton);
     this.noButton = document.createElement("button");
     this.noButton.innerHTML = "No";
+    this.yesButton.addEventListener("click", () =>
+      this.manageEffect(effect, true)
+    );
+    this.noButton.addEventListener("click", () =>
+      this.manageEffect(effect, false)
+    );
 
     this.optionsDiv.appendChild(this.noButton);
   }
 
+  manageEffect(effect, bool) {
+    this.trigger("clicked", [effect, bool]);
+  }
   removeText() {
     this.container.classList.add("z-order");
     this.textDiv.innerHTML = "";
     this.optionsDiv.innerHTML = "";
-    this.yesButton.removeEventListener("click", this.currentEffect);
+    this.yesButton.removeEventListener("click", () =>
+      this.manageEffect(this.currentEffect, false)
+    );
+    this.noButton.removeEventListener("click", () =>
+      this.manageEffect(this.currentEffect, true)
+    );
     this.currentEffect = null;
     this.container.removeChild(this.textDiv);
     this.container.removeChild(this.optionsDiv);
+    this.off("clicked");
   }
 }
