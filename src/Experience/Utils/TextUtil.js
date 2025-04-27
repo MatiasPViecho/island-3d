@@ -107,11 +107,7 @@ export default class TextUtil extends EventEmitter {
   displayMessage(name = "dummy") {
     if (!this.isDisplayingFullscreenMessage) {
       this.messageContainer = document.createElement("div");
-      this.messageContainer.classList.add(
-        "container",
-        "fullMessage",
-        "gloria-hallelujah-regular"
-      );
+      this.messageContainer.classList.add("container", "fullMessage", "caveat");
       this.messageContainer.classList.remove("z-order");
       this.messageDiv = document.createElement("div");
       this.messageContainer.appendChild(this.messageDiv);

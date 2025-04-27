@@ -9,12 +9,12 @@
   font-weight: 400;
   font-style: normal;
 }
-.gloria-hallelujah-regular {
-  font-family: "Gloria Hallelujah", cursive;
+.caveat {
+  font-family: "Caveat", cursive;
+  font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
-
 html,
 body {
   overflow: hidden;
@@ -103,8 +103,10 @@ canvas.webgl.pointer {
   flex-direction: column;
   justify-content: center;
   gap: 12px;
+  cursor: pointer;
 }
 .container.fullMessage p {
+  user-select: none;
   overflow: hidden;
   font-size: 24px;
   opacity: 0;
@@ -146,17 +148,26 @@ canvas.webgl.pointer {
   .container .message {
     grid-column-start: 2;
   }
+  .container > .fullscreenMessage {
+    margin: 0 auto;
+    gap: 16px;
+  }
+  .container.fullMessage p {
+    font-size: 36px;
+  }
 }
 @media (width >= 768px) {
   .container .message,
-  .container .options button {
+  .container .options button,
+  .container.fullMessage p {
     font-size: 48px;
   }
 }
 
 @media (width >= 1024px) {
   .container .message,
-  .container .options button {
+  .container .options button,
+  .container.fullMessage p {
     font-size: 64px;
   }
   .container .options {
@@ -167,5 +178,8 @@ canvas.webgl.pointer {
   }
   .container .message {
     grid-column-start: 2;
+  }
+  .container > .fullscreenMessage {
+    gap: 24px;
   }
 }
