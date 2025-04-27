@@ -103,7 +103,8 @@ export default class Showcase extends EventEmitter {
         Math.PI / 4,
         0,
         0.25,
-        0.75
+        this.experience.sizes.width > 480 ? 0.75 : 0.5,
+        this.experience.sizes.width > 480 ? 0 : 0.1
       );
     }
   }
@@ -113,10 +114,12 @@ export default class Showcase extends EventEmitter {
     angleYStart,
     angleZStart,
     scaleStart,
-    scaleFinish
+    scaleFinish,
+    xOffset = 0
   ) {
     item.position.copy(this.camera.position);
     item.position.z -= 4;
+    item.position.x -= xOffset;
     item.rotation.set(angleXStart, angleYStart, angleZStart);
     item.scale.set(scaleStart, scaleStart, scaleStart);
     gsap.to(item.scale, {

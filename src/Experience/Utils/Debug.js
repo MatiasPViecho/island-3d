@@ -4,5 +4,6 @@ export default class Debug {
     this.active = window.location.hash == "#debug";
     this.ui = new GUI();
     this.settingsMenu = this.ui.addFolder("Sounds");
+    this.ui.close();
   }
 }
