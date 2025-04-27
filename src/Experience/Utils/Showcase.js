@@ -90,9 +90,7 @@ export default class Showcase extends EventEmitter {
       this.bottleText =
         "<p>There is a <strong>message</strong> in the <strong>bottle</strong>.</p><p>Read it?</p>";
     }
-    this.text.addText(this.bottleText, () =>
-      this.displayMessage("bottleMessage")
-    );
+    this.text.addText(this.bottleText, () => this.displayMessage("ozymandias"));
     this.text.on("clicked", (eff, val) => {
       this.manageButtonClick(eff, val);
     });
