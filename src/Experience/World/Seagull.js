@@ -8,6 +8,7 @@ export default class Seagull {
     this.seagull_restart_pos = 100;
     this.seagulls = [];
     this.mixers = [];
+    this.baseVolume = 0.2;
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
@@ -16,10 +17,10 @@ export default class Seagull {
     this.shouldStopAnimation = false;
     this.playedDuringRound = false;
     this.canPlaySounds = false;
-
+    this.generalVolume = this.experience.world.generalVolume;
     // Debug audio
     this.divider = 2;
-    this.sum = 0.2;
+    this.sum = 0.15;
 
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("seagull");
@@ -49,6 +50,7 @@ export default class Seagull {
         .name("restart POS");
     }
     this.resource = this.resources.items.seagullModel;
+    this.addSettings();
     this.instanciateModels(amount);
     // for (i = 0; i < amount; i++) {
     // }
@@ -100,9 +102,10 @@ export default class Seagull {
         this.experience.camera.instance.position.x
     ) {
       let calculatedVolume =
-        0.2 -
-        Math.abs(this.seagulls[0].position.x / 8) / this.divider +
-        this.sum;
+        (this.baseVolume -
+          Math.abs(this.seagulls[0].position.x / 8) / this.divider +
+          this.sum) *
+        this.generalVolume;
       this.audio.volume = Math.min(1, Math.max(0, calculatedVolume));
       if (this.audio.volume > 0 && !this.playedDuringRound) {
         this.audio.play();
@@ -122,8 +125,18 @@ export default class Seagull {
       console.error(e);
     }
   }
-
+  updateGeneralVolume(fl) {
+    this.generalVolume = fl;
+  }
   allowSounds() {
     this.canPlaySounds = true;
+  }
+  addSettings() {
+    this.experience.debug.settingsMenu
+      .add(this, "baseVolume")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("Seagulls");
   }
 }

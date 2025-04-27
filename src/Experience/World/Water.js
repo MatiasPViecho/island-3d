@@ -5,6 +5,8 @@ import waterFragmentShader from "../../shaders/water/fragment.glsl";
 export default class Water {
   constructor() {
     this.experience = new Experience();
+    this.generalVolume = this.experience.world.generalVolume;
+    this.baseVolume = 0.23;
     this.scene = this.experience.scene;
     this.time = this.experience.time;
     this.debug = this.experience.debug;
@@ -16,6 +18,7 @@ export default class Water {
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("water");
     }
+    this.addSettings();
 
     /**
      * Setup
@@ -88,10 +91,21 @@ export default class Water {
   allowSounds() {
     this.playSound();
   }
-
+  updateGeneralVolume(fl) {
+    this.generalVolume = fl;
+  }
   playSound() {
     this.audio.loop = true;
-    this.audio.volume = 0.3;
+    this.audio.volume = this.baseVolume * this.generalVolume;
     this.audio.play();
+  }
+
+  addSettings() {
+    this.experience.debug.settingsMenu
+      .add(this, "baseVolume")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("Water/Wind");
   }
 }

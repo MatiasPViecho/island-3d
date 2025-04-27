@@ -84,7 +84,6 @@ export default class Experience {
     });
   }
   markUserInteracted() {
-    console.log("user interacted!");
     window.removeEventListener("click", this.markUserInteracted);
     window.removeEventListener("keydown", this.markUserInteracted);
     window.removeEventListener("mousedown", this.markUserInteracted);

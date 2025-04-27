@@ -10,6 +10,7 @@ export default class World {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
+    this.generalVolume = 0.5;
     //wait for resources
     this.resources.on("ready", () => {
       this.island = new Island();
@@ -22,6 +23,7 @@ export default class World {
       this.water.addAudio(this.resources.items.waterAudio);
       this.soundtrack.addSoundtrack(this.resources.items.kalimbaAudio);
     });
+    this.generalVolumeSettings();
   }
 
   update() {
@@ -42,5 +44,19 @@ export default class World {
     this.seagull.allowSounds();
     this.water.allowSounds();
     this.soundtrack.allowSounds();
+  }
+  updateVolume(e) {
+    this.generalVolume = e;
+    this.water.updateGeneralVolume(e);
+    this.seagull.updateGeneralVolume(e);
+  }
+  generalVolumeSettings() {
+    this.experience.debug.settingsMenu
+      .add(this, "generalVolume")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("General Volume")
+      .onChange((e) => this.updateVolume(e));
   }
 }
