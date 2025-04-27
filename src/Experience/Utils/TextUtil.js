@@ -12,7 +12,6 @@ export default class TextUtil extends EventEmitter {
     this.experience = new Experience();
     this.canvas = this.experience.canvas;
     this.container = document.createElement("div");
-    this.messageContainer = document.createElement("div");
     this.textDiv = document.createElement("div");
     this.body = document.querySelector("body");
     this.body.appendChild(this.container);
@@ -25,6 +24,7 @@ export default class TextUtil extends EventEmitter {
     this.currentMessagePart = 0;
     this.totalMessageParts = 0;
     this.currentMessage = null;
+    this.preventCall = false;
   }
 
   addText(text, effect) {
@@ -81,19 +81,20 @@ export default class TextUtil extends EventEmitter {
             "I met a traveller from an antique land",
             "Who said: Two vast and trunkless legs of stone",
             "Stand in the desert. Near them, on the sand,",
-            "Half sunk, a shattered visage lies, whose frown,",
           ],
           [
+            "Half sunk, a shattered visage lies, whose frown,",
             "And wrinkled lip, and sneer of cold command,",
             "Tell that its sculptor well those passions read",
             "Which yet survive, stamped on these lifeless things,",
             "The hand that mocked them and the heart that fed.",
-            "And on the pedestal these words appear:",
           ],
           [
+            "And on the pedestal these words appear:",
             `"My name is Ozymandias, king of kings:`,
             `Look on my works, ye Mighty, and despair!"`,
-            "",
+          ],
+          [
             "Nothing beside remains. Round the decay",
             "Of that colossal wreck, boundless and bare",
             "The lone and level sands stretch far away",
@@ -105,6 +106,7 @@ export default class TextUtil extends EventEmitter {
 
   displayMessage(name = "dummy") {
     if (!this.isDisplayingFullscreenMessage) {
+      this.messageContainer = document.createElement("div");
       this.messageContainer.classList.add(
         "container",
         "fullMessage",
@@ -113,53 +115,68 @@ export default class TextUtil extends EventEmitter {
       this.messageContainer.classList.remove("z-order");
       this.messageDiv = document.createElement("div");
       this.messageContainer.appendChild(this.messageDiv);
-      this.messageDiv.classList.add("invisible");
+      this.messageDiv.classList.add("invisible", "fullscreenMessage");
       this.currentMessagePart = 0;
       this.currentMessage = this.getMessage(name);
-      this.totalMessageParts = this.currentMessage.parts.length;
+      this.totalMessageParts = this.currentMessage.parts.length - 1;
 
       this.isDisplayingFullscreenMessage = true;
 
-      for (
-        let i = 0;
-        i < this.currentMessage.parts[this.currentMessagePart].length;
-        i++
-      ) {
-        this.messageDiv.innerHTML += `<p>${
-          this.currentMessage.parts[this.currentMessagePart][i]
-        }</p>`;
-      }
+      this.addPartsOfMessage();
       this.messageContainer.addEventListener("animationend", () =>
         this.messageDiv.classList.remove("invisible")
       );
-      this.messageDiv.addEventListener("animationend", () => {
-        this.messageContainer.addEventListener("click", () => {
-          this.displayNextMessage();
-        });
-      });
 
       this.body.appendChild(this.messageContainer);
+
+      this.startMessageChain();
     }
   }
 
+  startMessageChain() {
+    this.manageClickPass();
+  }
+  manageClickPass() {
+    if (this.messageContainer) {
+      this.messageContainer.removeEventListener("click", () => {
+        this.displayNextMessage();
+      });
+      this.messageContainer.addEventListener("click", () => {
+        this.displayNextMessage();
+      });
+    }
+  }
+  addPartsOfMessage() {
+    for (
+      let i = 0;
+      i < this.currentMessage.parts[this.currentMessagePart].length;
+      i++
+    ) {
+      this.messageDiv.innerHTML += `<p>${
+        this.currentMessage.parts[this.currentMessagePart][i]
+      }</p>`;
+    }
+  }
   displayNextMessage() {
-    this.removeMessageScreen();
+    // this just doesn't work and it calls itself 4 times for some reason i can't understand, adding a fence here just for that
+    if (this.currentMessagePart + 1 > this.totalMessageParts)
+      this.removeMessageScreen();
+    else {
+      this.currentMessagePart++;
+      this.messageDiv.innerHTML = "";
+      this.addPartsOfMessage();
+    }
   }
 
   removeMessageScreen() {
     if (this.messageContainer.hasChildNodes())
       this.messageContainer.removeChild(this.messageDiv);
-    this.messageDiv.removeEventListener("animationend", () => {
-      this.messageContainer.addEventListener("click", () => {
-        this.displayNextMessage();
-      });
-    });
     this.messageContainer.removeEventListener("animationend", () =>
       this.messageDiv.classList.remove("invisible")
     );
-    this.messageContainer.removeEventListener("click", () => {
-      this.displayNextMessage();
-    });
+    this.messageContainer.removeEventListener("click", () =>
+      this.displayNextMessage()
+    );
     this.messageContainer.classList.add("z-order");
 
     this.isDisplayingFullscreenMessage = false;

@@ -96,23 +96,22 @@ canvas.webgl.pointer {
   display: flex;
   background: #000000dd;
   padding: 80px 16px;
-  animation: linear 0.3s reveal;
+  animation: linear 1s reveal;
 }
-.container > div {
+.container > .fullscreenMessage {
   display: flex;
   flex-direction: column;
-  text-align: center;
-  gap: 20px;
+  justify-content: center;
+  gap: 12px;
 }
 .container.fullMessage p {
-  animation: reveal 1s steps(9) forwards;
-  animation-delay: 0.3s;
   overflow: hidden;
   font-size: 24px;
-  line-height: 1.2;
-}
-.container.fullMessage .invisible p {
   opacity: 0;
+}
+.container.fullMessage :not(.invisible) p {
+  animation: reveal 1s steps(9) forwards;
+  animation-delay: 0.3s;
 }
 @keyframes reveal {
   from {
