@@ -101,3 +101,37 @@ canvas.webgl.pointer {
     text-shadow: 2px 2px 0px #1fca3e6b, -2px 2px 0px #1fca3e6b;
   }
 }
+
+@media (width >= 480px) {
+  .container .options {
+    grid-column-start: 2;
+  }
+  .container {
+    grid-template-columns: 1fr 2fr 3fr 2fr 1fr;
+  }
+  .container .message {
+    grid-column-start: 2;
+  }
+}
+@media (width >= 768px) {
+  .container .message,
+  .container .options button {
+    font-size: 48px;
+  }
+}
+
+@media (width >= 1024px) {
+  .container .message,
+  .container .options button {
+    font-size: 64px;
+  }
+  .container .options {
+    grid-column-start: 2;
+  }
+  .container {
+    grid-template-columns: 15% 70% 15%;
+  }
+  .container .message {
+    grid-column-start: 2;
+  }
+}
