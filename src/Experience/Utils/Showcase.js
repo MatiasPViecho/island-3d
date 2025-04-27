@@ -3,21 +3,26 @@ import Experience from "../Experience";
 import DarkLayer from "../Layer/DarkLayer";
 import gsap from "gsap";
 import EventEmitter from "./EventEmitter";
+import TextUtil from "./TextUtil";
 const SHOWCASED_ROTATION_SPEED = 0.25;
 export default class Showcase extends EventEmitter {
   constructor() {
     super();
     this.experience = new Experience();
+    this.text = new TextUtil();
     this.time = this.experience.time;
     this.camera = this.experience.camera.instance;
+
     this.itemShowcasing = false;
     this.itemRef = null;
+
     this.previousProperties = {
       item: null,
       position: null,
       rotation: null,
       scale: null,
     };
+
     window.addEventListener("click", () => {
       if (this.itemShowcasing) {
         this.removeItemShowcasing(this.itemRef);
@@ -41,6 +46,7 @@ export default class Showcase extends EventEmitter {
       this.tweakProperties(null, null, null, null);
       this.itemRef = null;
       this.itemShowcasing = false;
+      this.text.removeText();
     } catch (e) {
       console.error(e);
     }
@@ -70,23 +76,34 @@ export default class Showcase extends EventEmitter {
 
   applyItem(item) {
     try {
-      if (item && item.object && item.object.parent.name == "BottleAll") {
-        this.addItemShowcasing(item.object.parent.parent);
-        this.startShowcase(
-          item.object.parent.parent,
-          -Math.PI / 4,
-          Math.PI / 4,
-          0,
-          0.25,
-          0.75
-        );
-      }
+      this.initiateText(item);
+      this.initiateVisual(item);
       this.itemShowcasing = true;
     } catch (e) {
       console.error(e);
     }
   }
 
+  initiateText(item) {
+    if (item && item.object && item.object.parent.name == "BottleAll") {
+      this.bottleText =
+        "<p>There is a <strong>message</strong> in the <strong>bottle</strong>.</p><p>Read it?</p>";
+    }
+    this.text.addText(this.bottleText);
+  }
+  initiateVisual(item) {
+    if (item && item.object && item.object.parent.name == "BottleAll") {
+      this.addItemShowcasing(item.object.parent.parent);
+      this.startShowcase(
+        item.object.parent.parent,
+        -Math.PI / 4,
+        Math.PI / 4,
+        0,
+        0.25,
+        0.75
+      );
+    }
+  }
   startShowcase(
     item,
     angleXStart,

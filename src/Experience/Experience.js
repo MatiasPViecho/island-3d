@@ -10,6 +10,7 @@ import Debug from "./Utils/Debug";
 import Mouse from "./Utils/Mouse";
 import Raycaster from "./Utils/Raycaster";
 import Showcase from "./Utils/Showcase";
+import TextUtil from "./Utils/TextUtil";
 let instance = null;
 export default class Experience {
   constructor(canvas) {
