@@ -24,7 +24,6 @@ export default class TextUtil extends EventEmitter {
     this.currentMessagePart = 0;
     this.totalMessageParts = 0;
     this.currentMessage = null;
-    this.preventCall = false;
   }
 
   addText(text, effect) {
@@ -119,18 +118,21 @@ export default class TextUtil extends EventEmitter {
       this.isDisplayingFullscreenMessage = true;
 
       this.addPartsOfMessage();
-      this.messageContainer.addEventListener("animationend", () =>
-        this.messageDiv.classList.remove("invisible")
-      );
-
+      this.messageContainer.addEventListener("animationend", () => {
+        this.messageDiv.classList.remove("invisible");
+      });
+      this.messageDiv.addEventListener("animationend", () => {
+        this.startMessageChain();
+      });
       this.body.appendChild(this.messageContainer);
-
-      this.startMessageChain();
     }
   }
 
   startMessageChain() {
-    this.manageClickPass();
+    if (!this.chainStarted) {
+      this.manageClickPass();
+      this.chainStarted = true;
+    }
   }
   manageClickPass() {
     if (this.messageContainer) {
@@ -174,7 +176,10 @@ export default class TextUtil extends EventEmitter {
       this.displayNextMessage()
     );
     this.messageContainer.classList.add("z-order");
-
+    this.messageDiv.removeEventListener("animationend", () => {
+      this.startMessageChain();
+    });
     this.isDisplayingFullscreenMessage = false;
+    this.chainStarted = false;
   }
 }

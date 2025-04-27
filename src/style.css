@@ -166,9 +166,11 @@ canvas.webgl.pointer {
 
 @media (width >= 1024px) {
   .container .message,
-  .container .options button,
-  .container.fullMessage p {
+  .container .options button {
     font-size: 64px;
+  }
+  .container.fullMessage p {
+    font-size: 52px;
   }
   .container .options {
     grid-column-start: 2;
@@ -181,5 +183,9 @@ canvas.webgl.pointer {
   }
   .container > .fullscreenMessage {
     gap: 24px;
+  }
+  .container > .fullscreenMessage p {
+    text-wrap: nowrap;
+    overflow: visible;
   }
 }
