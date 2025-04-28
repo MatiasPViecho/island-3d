@@ -5,14 +5,13 @@ import Water from "./Water";
 import Bottle from "./Bottle";
 import Seagull from "./Seagull";
 import Soundtrack from "../Utils/Soundtrack";
-import EventEmitter from "../Utils/EventEmitter";
-export default class World extends EventEmitter {
+export default class World {
   constructor() {
-    super();
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
     this.generalVolume = 0.5;
+
     //wait for resources
     this.resources.on("ready", () => {
       this.island = new Island();
@@ -24,7 +23,6 @@ export default class World extends EventEmitter {
       this.seagull.addAudio(this.resources.items.seagullAudio);
       this.water.addAudio(this.resources.items.waterAudio);
       this.soundtrack.addSoundtrack(this.resources.items.kalimbaAudio);
-      this.trigger("ready");
     });
     this.generalVolumeSettings();
   }
