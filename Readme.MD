@@ -33,3 +33,6 @@ Rushing_water+wind-Rec_Samsung_HMX-F80_Camcorder.flac by toam -- https://freesou
 "Kalimba Relaxation Music" Kevin MacLeod (incompetech.com)
 Licensed under Creative Commons: By Attribution 4.0 License
 http://creativecommons.org/licenses/by/4.0/
+
+"Ozymandias" Poem by Percy Bysshe Shelley, Shelley, Percy Bysshe (1819). Rosalind and Helen, a modern eclogue; with other poems. London. p. 92.
+Link: https://babel.hathitrust.org/cgi/pt?id=dul1.ark:/13960/t1bk2mq33&view=1up&seq=106
