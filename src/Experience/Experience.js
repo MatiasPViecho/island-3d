@@ -10,6 +10,7 @@ import Debug from "./Utils/Debug";
 import Mouse from "./Utils/Mouse";
 import Raycaster from "./Utils/Raycaster";
 import Showcase from "./Utils/Showcase";
+import LoadingBar from "./Utils/LoadingBar";
 let instance = null;
 export default class Experience {
   constructor(canvas) {
@@ -23,12 +24,16 @@ export default class Experience {
     window.experience = this;
 
     // Properties
+    this.loadingBar = new LoadingBar();
     this.canvas = canvas;
     this.debug = new Debug();
     this.sizes = new Sizes();
     this.time = new Time();
     this.scene = new THREE.Scene();
-    this.resources = new Resources(sources);
+    this.resources = new Resources(
+      sources,
+      this.loadingBar.getLoadingManager()
+    );
     this.camera = new Camera(this);
     this.world = new World();
     this.renderer = new Renderer();
@@ -61,6 +66,10 @@ export default class Experience {
     });
 
     this.setBaseUserInteractions();
+
+    this.loadingBar.on("finished", () => {
+      this.renderer.fadeIn();
+    });
   }
   allowSounds() {
     this.world.allowSounds();
@@ -128,5 +137,9 @@ export default class Experience {
     this.camera.controls.dispose();
     this.renderer.instance.dispose();
     // IF using post-processing (effectComposer, webGLRenderTarget...) needs to dispose those
+  }
+
+  fadeInCompleted() {
+    this.loadingBar.fadeInCompleted();
   }
 }

@@ -61,4 +61,8 @@ export default class Renderer {
       this.outlinePass.disable();
     }
   }
+
+  fadeIn() {
+    this.ditherPass.fadeIn();
+  }
 }

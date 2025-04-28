@@ -8,6 +8,8 @@ uniform sampler2D tDiffuse;
 uniform vec2 uResolution;
 uniform float uColorNum;
 uniform float uPixelSize;
+uniform float uFadeMultiplier;
+uniform float uAllowDither; // will be 0 or 1
 varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vPosition;
@@ -163,7 +165,7 @@ void main()
   vec2 uvPixel = normalizedPixelSize * floor(vUv / normalizedPixelSize);
   vec4 color = texture2D(tDiffuse, uvPixel);
   vec3 viewDirection = normalize(vPosition - cameraPosition);
-  color.rgb = dither(vUv, color.rgb);
+  color.rgb = dither(vUv, color.rgb) * (uFadeMultiplier);
 
   // lights 
   vec3 light = vec3(0.0);
@@ -179,6 +181,5 @@ void main()
   //color.rgb = ACESFilm(color.rgb);
 
   //color.rgb = pow(col, vec3(1.0/1.8));
-
-  gl_FragColor = color;
+  gl_FragColor = vec4(color.rgb, uFadeMultiplier);
 }

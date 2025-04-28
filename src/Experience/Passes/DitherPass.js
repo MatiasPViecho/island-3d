@@ -3,6 +3,7 @@ import DitherVertexShader from "../../shaders/dither/vertex.glsl";
 import DitherFragmentShader from "../../shaders/dither/fragment.glsl";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { Uniform } from "three";
+import gsap from "gsap";
 export default class DitherPass {
   constructor() {
     this.experience = new Experience();
@@ -45,6 +46,8 @@ export default class DitherPass {
         uColorNum: new Uniform(32.0),
         uPixelSize: new Uniform(2.0),
         tDiffuse: new Uniform(null),
+        uFadeMultiplier: new Uniform(0.0),
+        uAllowDither: new Uniform(0.0),
         pointLightViewDirectionX: new Uniform(
           this.uniformOptions.pointLightViewDirectionX
         ),
@@ -65,5 +68,16 @@ export default class DitherPass {
 
   resize() {
     this.shaderPass.uniforms.uResolution.value = this.sizes.resolution;
+  }
+
+  fadeIn() {
+    gsap.to(this.shaderPass.uniforms.uFadeMultiplier, {
+      value: 1,
+      duration: 3,
+      stagger: 0.1,
+      onComplete: () => {
+        this.experience.fadeInCompleted();
+      },
+    });
   }
 }

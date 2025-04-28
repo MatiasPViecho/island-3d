@@ -4,7 +4,7 @@ import EventEmitter from "./EventEmitter";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 export default class Resources extends EventEmitter {
-  constructor(sources) {
+  constructor(sources, loadingManager) {
     super();
     // options
     this.sources = sources;
@@ -13,20 +13,20 @@ export default class Resources extends EventEmitter {
     this.toLoad = this.sources.length;
     this.loaded = 0;
     this.dracoEnabled = true;
-    this.setLoaders();
+    this.setLoaders(loadingManager);
     this.startLoading();
   }
 
-  setLoaders() {
+  setLoaders(loadingManager) {
     this.loaders = {};
-    this.loaders.gltfLoader = new GLTFLoader();
+    this.loaders.gltfLoader = new GLTFLoader(loadingManager);
     if (this.dracoEnabled) {
       this.dracoLoader = new DRACOLoader();
       this.dracoLoader.setDecoderPath("draco/");
     }
     this.loaders.gltfLoader.setDRACOLoader(this.dracoLoader);
-    this.loaders.textureLoader = new THREE.TextureLoader();
-    this.loaders.rgbeLoader = new RGBELoader();
+    this.loaders.textureLoader = new THREE.TextureLoader(loadingManager);
+    this.loaders.rgbeLoader = new RGBELoader(loadingManager);
   }
 
   startLoading() {
