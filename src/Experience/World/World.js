@@ -43,8 +43,8 @@ export default class World {
 
   allowSounds() {
     if (this.seagull) this.seagull.allowSounds();
-    this.water.allowSounds();
-    this.soundtrack.allowSounds();
+    if (this.water) this.water.allowSounds();
+    if (this.soundtrack) this.soundtrack.allowSounds();
   }
   updateVolume(e) {
     this.generalVolume = e;

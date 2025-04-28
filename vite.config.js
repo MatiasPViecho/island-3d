@@ -13,6 +13,12 @@ export default {
     outDir: "../dist", // Output in the dist/ folder
     emptyOutDir: true, // Empty the folder first
     sourcemap: true, // Add sourcemap
+    rollupOptions: {
+      input: {
+        main: "/index.html",
+        credits: "/credits/index.html",
+      },
+    },
   },
   plugins: [
     restart({ restart: ["../static/**"] }), // Restart server on static file change
