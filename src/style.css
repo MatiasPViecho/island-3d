@@ -7,6 +7,51 @@
 /**
 * Loading Bar and Body
 */
+.credits-container {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  gap: 24px;
+  color: white;
+  cursor: default;
+}
+.credits-container .title * {
+  font-size: 24px;
+}
+.credits-container a {
+  color: #644df6;
+}
+.credits-container a:hover {
+  color: #5844da;
+  text-decoration: underline;
+}
+.credits-container .references h2 {
+  font-size: 20px;
+}
+.references ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0px 20px;
+}
+.references .list-container {
+  padding: 12px 0;
+}
+.ref-link,
+a {
+  text-decoration: none;
+}
+.ref-link {
+  color: white;
+  z-index: 20;
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  font-size: 16px;
+}
+a.ref-link:hover {
+  text-decoration: underline;
+}
 html,
 body {
   overflow: hidden;
