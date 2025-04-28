@@ -25,6 +25,16 @@ export default class TextUtil extends EventEmitter {
     this.currentMessagePart = 0;
     this.totalMessageParts = 0;
     this.currentMessage = null;
+
+    /**
+     * Audio
+     */
+    this.buttonAudioName = "bassAudio";
+    this.readAudioName = "paperAudio";
+    this.openAudioName = "corkOpenAudio";
+    this.audio = {};
+    this.canPlaySounds = false;
+    this.baseVolume = 1;
   }
 
   addText(text, effect) {
@@ -43,8 +53,14 @@ export default class TextUtil extends EventEmitter {
     this.optionsDiv.appendChild(this.yesButton);
     this.noButton = document.createElement("button");
     this.noButton.innerHTML = "No";
+    this.yesButton.addEventListener("mouseover", () =>
+      this.play(this.buttonAudioName, true)
+    );
     this.yesButton.addEventListener("click", () =>
       this.manageEffect(effect, true)
+    );
+    this.noButton.addEventListener("mouseover", () =>
+      this.play(this.buttonAudioName, true)
     );
     this.noButton.addEventListener("click", () =>
       this.manageEffect(effect, false)
@@ -66,6 +82,13 @@ export default class TextUtil extends EventEmitter {
     this.noButton.removeEventListener("click", () =>
       this.manageEffect(this.currentEffect, true)
     );
+    this.noButton.removeEventListener("mouseover", () =>
+      this.play(this.buttonAudioName, true)
+    );
+    this.yesButton.removeEventListener("mouseover", () =>
+      this.play(this.buttonAudioName, true)
+    );
+
     this.currentEffect = null;
     this.container.removeChild(this.textDiv);
     this.container.removeChild(this.optionsDiv);
@@ -91,6 +114,7 @@ export default class TextUtil extends EventEmitter {
       this.isDisplayingFullscreenMessage = true;
 
       this.addPartsOfMessage();
+      this.play(this.openAudioName);
       this.messageContainer.addEventListener("animationend", () => {
         this.messageDiv.classList.remove("invisible");
       });
@@ -103,6 +127,7 @@ export default class TextUtil extends EventEmitter {
 
   startMessageChain() {
     if (!this.chainStarted) {
+      this.allowSounds();
       this.manageClickPass();
       this.chainStarted = true;
     }
@@ -133,6 +158,7 @@ export default class TextUtil extends EventEmitter {
     if (this.currentMessagePart + 1 > this.totalMessageParts)
       this.removeMessageScreen();
     else {
+      this.play(this.readAudioName);
       this.currentMessagePart++;
       this.messageDiv.innerHTML = "";
       this.addPartsOfMessage();
@@ -154,5 +180,33 @@ export default class TextUtil extends EventEmitter {
     });
     this.isDisplayingFullscreenMessage = false;
     this.chainStarted = false;
+  }
+
+  addAudio(audio, name, baseVolume = 1.0) {
+    try {
+      audio.volume = baseVolume;
+      this.audio[name] = audio;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  allowSounds() {
+    this.canPlaySounds = true;
+  }
+  disableSound() {
+    this.canPlaySounds = false;
+  }
+  play(name, allowStop = false) {
+    try {
+      if (!name) return;
+      if (allowStop) {
+        this.audio[name].pause();
+        this.audio[name].currentTime = "0";
+      }
+      this.audio[name].play();
+    } catch (e) {
+      console.warn("no audio can be played");
+      console.error(e);
+    }
   }
 }

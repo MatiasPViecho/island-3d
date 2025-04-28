@@ -34,5 +34,11 @@ Rushing_water+wind-Rec_Samsung_HMX-F80_Camcorder.flac by toam -- https://freesou
 Licensed under Creative Commons: By Attribution 4.0 License
 http://creativecommons.org/licenses/by/4.0/
 
+paper flipping.wav by 12beesinatrenchcoat -- https://freesound.org/s/653954/ -- License: Creative Commons 0
+
+Wine Bottle Cork by shaderrow -- https://freesound.org/s/437201/ -- License: Attribution NonCommercial 4.0
+
+G#\_DX7Bass_01 by oceansonmars -- https://freesound.org/s/711477/ -- License: Creative Commons 0
+
 "Ozymandias" Poem by Percy Bysshe Shelley, Shelley, Percy Bysshe (1819). Rosalind and Helen, a modern eclogue; with other poems. London. p. 92.
 Link: https://babel.hathitrust.org/cgi/pt?id=dul1.ark:/13960/t1bk2mq33&view=1up&seq=106

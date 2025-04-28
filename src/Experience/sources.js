@@ -55,4 +55,19 @@ export default [
     type: "audio",
     path: "audios/Kalimba_Relaxation_Music.mp3",
   },
+  {
+    name: "paper",
+    type: "audio",
+    path: "audios/653954__12beesinatrenchcoat__paper-flipping.wav",
+  },
+  {
+    name: "corkOpen",
+    type: "audio",
+    path: "audios/437201__shaderrow__wine-bottle-cork.wav",
+  },
+  {
+    name: "bass",
+    type: "audio",
+    path: "audios/711477__oceansonmars__g_dx7bass_01.wav",
+  },
 ];

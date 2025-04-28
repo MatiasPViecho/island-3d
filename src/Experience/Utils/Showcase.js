@@ -1,6 +1,5 @@
 import { Vector3, Vector4 } from "three";
 import Experience from "../Experience";
-import DarkLayer from "../Layer/DarkLayer";
 import gsap from "gsap";
 import EventEmitter from "./EventEmitter";
 import TextUtil from "./TextUtil";
@@ -9,7 +8,9 @@ export default class Showcase extends EventEmitter {
   constructor() {
     super();
     this.experience = new Experience();
+    this.resources = this.experience.resources;
     this.text = new TextUtil();
+    this.addAudiosToText();
     this.time = this.experience.time;
     this.camera = this.experience.camera.instance;
     this.allowRemoval = false;
@@ -39,6 +40,15 @@ export default class Showcase extends EventEmitter {
     });
   }
 
+  addAudiosToText() {
+    this.text.addAudio(this.resources.items.paperAudio, "paperAudio", 1.0);
+    this.text.addAudio(
+      this.resources.items.corkOpenAudio,
+      "corkOpenAudio",
+      1.0
+    );
+    this.text.addAudio(this.resources.items.bassAudio, "bassAudio", 0.05);
+  }
   removeItemShowcasing(item) {
     try {
       item.position.copy(this.previousProperties.position);
