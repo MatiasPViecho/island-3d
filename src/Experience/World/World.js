@@ -42,7 +42,7 @@ export default class World {
   }
 
   allowSounds() {
-    this.seagull.allowSounds();
+    if (this.seagull) this.seagull.allowSounds();
     this.water.allowSounds();
     this.soundtrack.allowSounds();
   }

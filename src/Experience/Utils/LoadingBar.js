@@ -19,7 +19,7 @@ export default class LoadingBar extends EventEmitter {
         });
       },
       // Progress
-      (itemUrl, itemsLoaded, itemsTotal) => {
+      (_itemUrl, itemsLoaded, itemsTotal) => {
         const progressRatio = itemsLoaded / itemsTotal;
         percentage.innerHTML = `${progressRatio * 100}%`;
         this.loadingBarDOM.style.transform = `scaleX(${progressRatio})`;
